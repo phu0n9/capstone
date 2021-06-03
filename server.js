@@ -29,6 +29,9 @@ mongoose.connect(uri,
     useFindAndModify: false
 })
 
+app.use(cors())
+app.use(express.json())
+
 const PORT = process.env.PORT || 5000
 const httpServer = require('http').createServer(app)
 const io = require('socket.io')(httpServer || 5000,{
@@ -37,8 +40,6 @@ const io = require('socket.io')(httpServer || 5000,{
         methods: ["GET", "POST"],
     },
 })
-// app.use(cors())
-// app.use(express.json())
 
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,"client", "build")))
