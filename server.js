@@ -51,6 +51,9 @@ if (process.env.NODE_ENV === "production"){
 
 io.on("connection",socket =>{
     
+    socket.on('raspberry-send',delta =>{
+        socket.broadcast.emit('receive-raspberry',delta)
+    })
 
     socket.on('sending-result',delta =>{
         socket.broadcast.emit('display-result',delta)
@@ -67,10 +70,7 @@ io.on("connection",socket =>{
             console.log('server sending ',delta)
             // io.emit('user-id',userId)    
         })
-        
-        socket.on('raspberry-send',delta =>{
-            socket.broadcast.emit('receive-raspberry',delta)
-        })
+    
 
         //TODO: infinity scroll, connect database & load data, raspberry pi connect
        
