@@ -16,7 +16,7 @@ function App() {
       <Route path="/" exact>
         <Redirect to={`/user=${uuidV4()}`}/>
       </Route>
-      <Route path="/user=:id">
+      <Route path="/user=:id" component={Homepage}>
         <Homepage/>
       </Route>
     </Switch>
