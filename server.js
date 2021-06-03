@@ -5,6 +5,7 @@ const Inventory = require('./model/inventory.model')
 const User = require('./model/user.model')
 const path = require('path')
 
+
 require('dotenv').config()
 
 const app = express()
@@ -29,6 +30,15 @@ mongoose.connect(uri,
     useFindAndModify: false
 })
 
+const PORT = process.env.PORT || 5000
+const httpServer = require('http').createServer(app)
+const io = require('socket.io')(httpServer || PORT,{
+    cors:{
+        origin: [`http://${IP}:3000`],
+        methods: ["GET", "POST"],
+    },
+})
+
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,"client", "build")))
 
@@ -36,13 +46,6 @@ if (process.env.NODE_ENV === "production"){
         res.sendFile(path.join(__dirname,"client", "build", "index.html"));
     });
 }
-
-const io = require('socket.io')(process.env.PORT || 5000,{
-    cors:{
-        origin: [`http://${IP}:3000`],
-        methods: ["GET", "POST"],
-    },
-})
 
 io.on("connection",socket =>{
     socket.on('raspberry-send',delta =>{
