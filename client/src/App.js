@@ -7,6 +7,7 @@ import {
   Redirect
 } from 'react-router-dom'
 import {v4 as uuidV4} from 'uuid'
+import React from 'react'
 
 function App() {
   return (
