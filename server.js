@@ -29,8 +29,8 @@ mongoose.connect(uri,
     useFindAndModify: false
 })
 
-app.use(cors())
-app.use(express.json())
+// app.use(cors())
+// app.use(express.json())
 
 const PORT = process.env.PORT || 5000
 const httpServer = require('http').createServer(app).listen(PORT)
