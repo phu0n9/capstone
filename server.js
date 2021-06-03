@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const cors = require('cors');
 const Inventory = require('./model/inventory.model')
 const User = require('./model/user.model')
+const path = require('path')
 
 require('dotenv').config()
 
