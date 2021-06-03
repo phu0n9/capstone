@@ -9,8 +9,7 @@ const path = require('path')
 require('dotenv').config()
 
 const app = express()
-app.use(cors())
-app.use(express.json())
+
 
 const IP = 'localhost'
 // const IP = '172.20.10.3'
@@ -38,6 +37,8 @@ const io = require('socket.io')(httpServer || PORT,{
         methods: ["GET", "POST"],
     },
 })
+app.use(cors())
+app.use(express.json())
 
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,"client", "build")))
