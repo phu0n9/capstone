@@ -8,7 +8,7 @@ export default function Status() {
     const [battery,setBattery] = useState()
 
     useEffect(() => {
-        const s = io(`http://${IP}:5000`)
+        const s = io(`https://schaeffler.herokuapp.com`)
         setSocket(s)
         return () =>{
             s.disconnect()  
