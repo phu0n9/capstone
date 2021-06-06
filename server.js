@@ -38,6 +38,7 @@ const io = require('socket.io')(httpServer,{
     cors:{
         origin: [`http://${IP}:3000`],
         methods: ["GET", "POST"],
+        credentials: true
     },
 })
 
