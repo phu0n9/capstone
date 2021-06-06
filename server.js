@@ -36,7 +36,7 @@ const PORT = process.env.PORT || 5000
 const httpServer = require('http').createServer(app).listen(PORT)
 const io = require('socket.io')(httpServer,{
     cors:{
-        origin: [`http://${IP}:3000`],
+        origin: [`http://localhost:3000`],
         methods: ["GET", "POST"],
     },
 })
@@ -50,9 +50,8 @@ if (process.env.NODE_ENV === "production"){
 }
 
 io.on("connection",socket =>{
-    
     socket.on('raspberry-send',delta =>{
-        console.log("this "+delta)
+        console.log("this "+delta['velocity'])
         socket.broadcast.emit('receive-raspberry',delta)
     })
 
