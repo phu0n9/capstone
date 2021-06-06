@@ -54,6 +54,7 @@ io.on("connection",socket =>{
     
     socket.on('raspberry-send',delta =>{
         socket.broadcast.emit('receive-raspberry',delta)
+        console.log("this "+delta)
     })
 
     socket.on('sending-result',delta =>{
