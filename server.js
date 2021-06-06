@@ -38,9 +38,13 @@ const io = require('socket.io')(httpServer,{
     cors:{
         origin: [`http://${IP}:3000`],
         methods: ["GET", "POST"],
-        credentials: true
     },
 })
+
+io.configure(function () { 
+    io.set("transports", ["xhr-polling"]); 
+    io.set("polling duration", 10); 
+  });
 
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,"client", "build")))
@@ -53,8 +57,8 @@ if (process.env.NODE_ENV === "production"){
 io.on("connection",socket =>{
     
     socket.on('raspberry-send',delta =>{
-        socket.broadcast.emit('receive-raspberry',delta)
         console.log("this "+delta)
+        socket.broadcast.emit('receive-raspberry',delta)
     })
 
     socket.on('sending-result',delta =>{
