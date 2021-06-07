@@ -50,6 +50,8 @@ if (process.env.NODE_ENV === "production"){
 }
 
 io.on("connection",socket =>{
+    console.log('server connected')
+
     socket.on('raspberry-send',delta =>{
         socket.broadcast.emit('receive-raspberry',delta)
     })
@@ -96,7 +98,6 @@ io.on("connection",socket =>{
 
     })
 
-    console.log('server connected')
 
     socket.on('disconnect',function(){
         console.log('Disconnected!')

@@ -2,7 +2,6 @@ import React,{useEffect,useState} from 'react'
 import {io} from 'socket.io-client'
 
 export default function Status() {
-    const IP = 'localhost'
     const [socket,setSocket] = useState()
     const [velocity,setVelocity] = useState()
     const [battery,setBattery] = useState()

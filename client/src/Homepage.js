@@ -7,11 +7,7 @@ import PhotoDisplay from './PhotoDisplay'
 import SidebarBox from './SidebarBox'
 import {useState} from 'react'
 export default function Homepage() {
-    // const [photo, setPhoto] = useState()
-    // const [status,setStatus] = useState()
     const [clickPhoto,setClickPhoto] = useState()
-    // status = {status} photo={photo}
-    // setStatus={setStatus} setPhoto={setPhoto}
     return (
         <>
         <SearchBar/>
