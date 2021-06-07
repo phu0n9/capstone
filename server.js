@@ -59,16 +59,18 @@ io.on("connection",socket =>{
         console.log('server received ',delta['location'])
     })
 
+    socket.on('begin-search',delta =>{
+        socket.broadcast.emit('sending-search', delta)
+        console.log('server sending ',delta)
+        // io.emit('user-id',userId)    
+    })
+
     socket.on('get-user', async userId =>{
         // socket.on('send-changes',delta =>{
         //     // console.log("you see this ",delta)
         //     socket.broadcast.emit('receive-changes',delta)
         // })
-        socket.on('begin-search',delta =>{
-            socket.broadcast.emit('sending-search', delta)
-            console.log('server sending ',delta)
-            // io.emit('user-id',userId)    
-        })
+        
     
 
         //TODO: infinity scroll, connect database & load data, raspberry pi connect
