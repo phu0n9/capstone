@@ -11,7 +11,7 @@ export default function SidebarBox({setClickPhoto}) {
     const IP = 'localhost'
 
     useEffect(() => {
-        const s = io(`http://${IP}:5000`)
+        const s = io(`https://schaeffler.herokuapp.com`)
         setSocket(s)
         return () =>{
             s.disconnect()  

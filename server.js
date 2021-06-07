@@ -51,7 +51,6 @@ if (process.env.NODE_ENV === "production"){
 
 io.on("connection",socket =>{
     socket.on('raspberry-send',delta =>{
-        console.log("this "+delta['velocity'])
         socket.broadcast.emit('receive-raspberry',delta)
     })
 
