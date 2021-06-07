@@ -18,12 +18,12 @@ export default function SidebarBox({setClickPhoto}) {
         }
     }, [])  
 
-    useEffect(() => {
-        if(socket == null) return
+    // useEffect(() => {
+    //     if(socket == null) return
         
-        socket.emit('get-user',userId)
+    //     socket.emit('get-user',userId)
 
-    }, [socket,userId])
+    // }, [socket,userId])
 
     useEffect(() =>{
         if (socket == null) return
