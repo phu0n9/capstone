@@ -54,15 +54,15 @@ io.on("connection",socket =>{
         socket.broadcast.emit('receive-raspberry',delta)
     })
 
-    socket.on('sending-result',delta =>{
-        socket.broadcast.emit('display-result',delta)
-        console.log('server received ',delta['location'])
-    })
-
     socket.on('begin-search',delta =>{
         socket.broadcast.emit('sending-search', delta)
         console.log('server sending ',delta)
         // io.emit('user-id',userId)    
+    })
+
+    socket.on('sending-result',delta =>{
+        socket.broadcast.emit('display-result',delta)
+        console.log('server received ',delta['location'])
     })
 
     socket.on('get-user', async userId =>{
