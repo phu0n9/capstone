@@ -1,14 +1,10 @@
 import React,{useEffect,useState} from 'react'
 import {io} from 'socket.io-client'
-import {useParams} from 'react-router-dom'
 
 export default function SidebarBox({setClickPhoto}) {
     const [location,setLocation] = useState()
     const [photo,setPhoto] = useState()
-    const {id: userId} = useParams()
     const [socket,setSocket] = useState()
-
-    const IP = 'localhost'
 
     useEffect(() => {
         const s = io(`https://schaeffler.herokuapp.com`)
@@ -17,13 +13,6 @@ export default function SidebarBox({setClickPhoto}) {
             s.disconnect()  
         }
     }, [])  
-
-    // useEffect(() => {
-    //     if(socket == null) return
-        
-    //     socket.emit('get-user',userId)
-
-    // }, [socket,userId])
 
     useEffect(() =>{
         if (socket == null) return
