@@ -1,17 +1,14 @@
 import React,{useEffect,useState} from 'react'
 import {io} from 'socket.io-client'
-import {useParams} from 'react-router-dom'
 
 export default function SearchBar() {
-    const IP = 'localhost'
-    // const IP = '172.20.10.3'
+  
     const [socket,setSocket] = useState()
     const [clicked,setClick] = useState(false)
     const [keyword,setKeyword] = useState()
-    const {id: userId} = useParams()
 
     useEffect(() => {
-        const s = io(`http://${IP}:5000`)
+        const s = io(`https://schaeffler.herokuapp.com`)
         setSocket(s)
         return () =>{
             s.disconnect()  
@@ -26,13 +23,6 @@ export default function SearchBar() {
     const onSearching = (event) =>{
         setKeyword(event.target.value);
     }
-
-    useEffect(() => {
-        if(socket == null) return
-        
-        socket.emit('get-user',userId)
-
-    }, [socket,userId])
 
     useEffect(() =>{
         if (socket === null || keyword === null) return

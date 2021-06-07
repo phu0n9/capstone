@@ -57,8 +57,8 @@ io.on("connection",socket =>{
     })
 
     socket.on('begin-search',delta =>{
-        socket.broadcast.emit('sending-search', delta)
         console.log('server sending ',delta)
+        socket.broadcast.emit('sending-search', delta)
         // io.emit('user-id',userId)    
     })
 
