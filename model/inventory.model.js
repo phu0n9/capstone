@@ -1,8 +1,19 @@
 const {Schema,model} = require('mongoose')
 
 const Inventory = new Schema({
-    data:Object,
-    userId:String
+    location:{
+        type:String,
+        required:true
+    },
+    photo:{
+        type:Object,
+        required:true
+    },
+    userId:{
+        type: Schema.Types.ObjectId, 
+        ref:'User',
+        required:true
+    }
 },{   
     timestamps: true,
 })

@@ -5,12 +5,18 @@ import Mapping from './Mapping'
 import Status from './Status'
 import PhotoDisplay from './PhotoDisplay'
 import SidebarBox from './SidebarBox'
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 export default function Homepage() {
     const [clickPhoto,setClickPhoto] = useState()
+    const [userId,setUserId] = useState()
+
+    useEffect(()=>{
+        setUserId(localStorage.getItem('userId'))
+    },[])
+
     return (
         <>
-        <SearchBar/>
+        <SearchBar userId={userId}/>
         <div className="grid-container">
             <SidebarBox  setClickPhoto={setClickPhoto}/>
             <div className="grid-item">
