@@ -1,14 +1,14 @@
 import React,{useEffect,useState} from 'react'
 import {io} from 'socket.io-client'
 
-export default function SearchBar() {
+export default function SearchBar({userId}) {
   
     const [socket,setSocket] = useState()
     const [clicked,setClick] = useState(false)
     const [keyword,setKeyword] = useState()
 
     useEffect(() => {
-        const s = io(`https://schaeffler.herokuapp.com`)
+        const s = io(`http://localhost:5000`)
         setSocket(s)
         return () =>{
             s.disconnect()  
@@ -27,11 +27,15 @@ export default function SearchBar() {
     useEffect(() =>{
         if (socket === null || keyword === null) return
         if(clicked === true && keyword !== null){
-            socket.emit("begin-search",keyword)
+            const key = {
+                "keyword":keyword,
+                "userId":userId
+            }
+            socket.emit("begin-search",key)
             setClick(!clicked)
             setKeyword("")
         }
-    },[socket,keyword,clicked])
+    },[socket,keyword,clicked,userId])
 
     return (
         <form className="search-bar">

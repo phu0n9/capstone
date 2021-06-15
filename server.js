@@ -2,24 +2,19 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors');
 const Inventory = require('./model/inventory.model')
-const User = require('./model/user.model')
 const path = require('path')
-
 
 require('dotenv').config()
 
 const app = express()
 
-
-const IP = 'localhost'
-// const IP = '172.20.10.3'
-
-const connection = mongoose.connection;
+const connection = mongoose.connection
 connection.once('open',() => {
-    console.log("MongoDB database connection established successfully");
-});
+    console.log("MongoDB database connection established successfully")
+})
+const inventoryWatch = Inventory.watch()
 
-const uri = process.env.ATLAS_URI;
+const uri = process.env.ATLAS_URI
 
 mongoose.connect(uri,
 {
@@ -29,8 +24,15 @@ mongoose.connect(uri,
     useFindAndModify: false
 })
 
-// app.use(cors())
-// app.use(express.json())
+app.use(cors())
+app.use(express.json())
+
+const loginRouter = require('./routes/userLogin')
+
+app.use('/login',loginRouter)
+
+const inventoryRouter = require('./routes/inventoryLoading')
+app.use('/inventory',inventoryRouter)
 
 const PORT = process.env.PORT || 5000
 const httpServer = require('http').createServer(app).listen(PORT)
@@ -59,62 +61,40 @@ io.on("connection",socket =>{
     socket.on('begin-search',delta =>{
         console.log('server sending ',delta)
         socket.broadcast.emit('sending-search', delta)
-        // io.emit('user-id',userId)    
     })
 
-    socket.on('sending-result',delta =>{
-        socket.broadcast.emit('display-result',delta)
-        console.log('server received ',delta['location'])
+    socket.on('sending-result',async delta =>{
+        const content = {
+            'location':delta['location'],
+            'photo':delta['photo'],
+            'userId':delta['userId']
+        }
+        await createInventory(content).catch(err => {console.log(err)})
+        inventoryWatch.on('change',()=>{
+            console.log('sending to front end')
+            socket.broadcast.emit('sending','hello')
+        })
+
+
+        // console.log('server received ',delta['location'])
     })
 
-    socket.on('get-user', async userId =>{
+    // const str = "testing this line"
+    // socket.broadcast.emit('sending',str)
+
+    // socket.on('get-user', async userId =>{
         // socket.on('send-changes',delta =>{
         //     // console.log("you see this ",delta)
         //     socket.broadcast.emit('receive-changes',delta)
         // })
-        
-    
 
-        //TODO: infinity scroll, connect database & load data, raspberry pi connect
-       
-        // const inventory = findOrCreateInventory(userId)
-
-        // socket.join(userId)
-        // socket.emit('load-inventory',inventory.data)
-
-        // socket.on("save-data", async data =>{
-        //     Inventory.findOneAndUpdate(userId,{data})
-        //     .then(inventory => {
-        //         inventory.data = data;
-        //         inventory.save()
-        //         console.log("userId= ",userId,"---",data," has been added")
-        //     })
-        //     .catch(
-        //         err => {
-        //             console.log(err)
-        //         }
-        //     )
-        // })
-
-    })
-
+        //TODO: user login with token, infinity scroll, connect database & load data, raspberry pi connect
 
     socket.on('disconnect',function(){
         console.log('Disconnected!')
     })
 })
 
-const defaultValue = ""
-
-async function findOrCreateInventory(id){
-    if(id == null) return
-
-    const filter = {userId:id}
-
-    const inventory = await Inventory.find(filter)
-    if(inventory) return inventory
-    return await Inventory.create({data:defaultValue,userId:id})
+async function createInventory(content){
+    return await Inventory.create(content)
 }
-
-
-

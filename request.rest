@@ -1,0 +1,26 @@
+GET http://localhost:5000/login/username
+
+
+###
+POST http://localhost:5000/login/username
+Content-Type: application/json
+
+{
+    "username": "hi",
+    "password":"hiagain123"
+}
+
+###
+POST http://localhost:5000/login 
+Content-Type: application/json
+
+{
+    "username": "hi",
+    "password":"hiagain123"
+}
+
+###
+GET http://localhost:5000/inventory/?page=5
+
+
+

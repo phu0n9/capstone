@@ -1,20 +1,11 @@
 import React,{useEffect,useState} from 'react'
 import {io} from 'socket.io-client'
-import {useParams} from 'react-router-dom'
 
-export default function Mapping({setPhoto,setStatus}) {
-    // const [inventory, setInventory] = useState()
-    // const [file,setFile] = useState()
+export default function Mapping() {
     const [socket,setSocket] = useState()
-    // const [state,setBtn] = useState(false)
-    const {id: userId} = useParams()
-    // const [map,setMap] = useState(new Map())
-
-    // const IP = '172.20.10.3'
-    const IP = 'localhost'
 
     useEffect(() => {
-        const s = io(`http://${IP}:5000`)
+        const s = io(`http://localhost:5000`)
         setSocket(s)
         return () =>{
             s.disconnect()  
@@ -74,17 +65,6 @@ export default function Mapping({setPhoto,setStatus}) {
     //         socket.off('receive-changes',handler)
     //     }
     // },[socket,map])
-
-    useEffect(() => {
-        if(socket == null) return
-        
-        socket.emit('get-user',userId)
-
-    }, [socket,userId])
-
-
-//TODO: broadcast changes with the stack in the side bar
-//  and communication with Raspberry Pi
  
     return (
         <div className="mapping-wrapper">

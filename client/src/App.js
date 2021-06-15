@@ -1,4 +1,5 @@
 import Homepage from './Homepage'
+import Login from './Login'
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   BrowserRouter as Router,
@@ -6,7 +7,6 @@ import {
   Route,
   Redirect
 } from 'react-router-dom'
-import {v4 as uuidV4} from 'uuid'
 import React from 'react'
 
 function App() {
@@ -14,11 +14,12 @@ function App() {
   <Router>
     <Switch>
       <Route path="/" exact>
-        <Redirect to={`/user=${uuidV4()}`}/>
+        <Redirect to="/login"/>
       </Route>
-      <Route path="/user=:id" component={Homepage}>
-        <Homepage/>
-      </Route>
+
+      <Route path="/login" component={Login}/>
+
+      <Route path="/homepage" component={Homepage}/>
     </Switch>
   </Router>   
   );
