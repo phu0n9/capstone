@@ -7,7 +7,7 @@ export default function InfinityScroll(pageNumber) {
     const [error,setError] = useState(false)
     const [inventory,setInventory] = useState([])
     const [hasMore,setHasMore] = useState(false)       
-
+    const [change,setChange] = useState(false)
     
     useEffect(() =>{
         const pusher = new Pusher('2ccb32686bdc0f96f50a',{
@@ -16,14 +16,33 @@ export default function InfinityScroll(pageNumber) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            window.location.reload()
+            // setChange(true)
+            setLoading(true)
+            setError(false)
+            axios({
+                method:'GET',
+                url: 'http://localhost:5000/inventory',
+                params:{page:5}
+            })
+            .then(res => {
+                setInventory(() =>{
+                    return [...new Set([...inventory,...res.data.map(i => i)])]
+                })
+                setHasMore(res.data.length > 0)
+                setLoading(false)
+            })
+            .catch(e =>{
+                setError(true)
+                console.log('Error: '+e)
+            })
         })
         return () => channel.unbind('inserted')
-    },[])
+    },[inventory])
 
     const refresh = () =>{
         setLoading(true)
         setError(false)
+        // setChange(false)
         axios({
             method:'GET',
             url: 'http://localhost:5000/inventory',
@@ -44,5 +63,5 @@ export default function InfinityScroll(pageNumber) {
 
     useEffect((refresh),[pageNumber])
 
-    return {loading,hasMore,error,inventory}
+    return {loading,hasMore,error,inventory,change}
 }

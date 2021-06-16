@@ -8,7 +8,7 @@ export default function SearchBar({userId}) {
     const [keyword,setKeyword] = useState()
 
     useEffect(() => {
-        const s = io(`http://localhost:5000`)
+        const s = io(`https://schaeffler.herokuapp.com/`)
         setSocket(s)
         return () =>{
             s.disconnect()  
