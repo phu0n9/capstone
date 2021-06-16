@@ -1,16 +1,29 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
+import Pusher from 'pusher-js'
 
 export default function InfinityScroll(pageNumber) {
     const [loading,setLoading] = useState(true)
     const [error,setError] = useState(false)
     const [inventory,setInventory] = useState([])
-    const [hasMore,setHasMore] = useState(false)
+    const [hasMore,setHasMore] = useState(false)       
 
+    
     useEffect(() =>{
+        const pusher = new Pusher('2ccb32686bdc0f96f50a',{
+            'cluster':'ap1',
+            encrypted:true
+        })
+        const channel = pusher.subscribe('tasks')
+        channel.bind('inserted',function(){
+            window.location.reload()
+        })
+        return () => channel.unbind('inserted')
+    },[])
+
+    const refresh = () =>{
         setLoading(true)
         setError(false)
-
         axios({
             method:'GET',
             url: 'http://localhost:5000/inventory',
@@ -27,6 +40,9 @@ export default function InfinityScroll(pageNumber) {
             setError(true)
             console.log('Error: '+e)
         })
-    },[pageNumber])
+    }
+
+    useEffect((refresh),[pageNumber])
+
     return {loading,hasMore,error,inventory}
 }

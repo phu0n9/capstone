@@ -1,16 +1,17 @@
-import React,{useCallback,useState,useRef} from 'react'
+import React,{useCallback,useState,useRef,useEffect} from 'react'
 import infinityScroll from './InfinityScroll'
 
 export default function SidebarBox({setClickPhoto}) {
     const observer = useRef()
     const [pageNumber,setPageNumber] = useState(5)
-
+    
     const {
         inventory,
         hasMore,
         error,
         loading
     } = infinityScroll(pageNumber)
+    
 
     const lastInventory= useCallback((node) =>{
         if(loading) return
@@ -21,7 +22,6 @@ export default function SidebarBox({setClickPhoto}) {
         })
         if(node) observer.current.observe(node)
     },[loading,hasMore])
-
 
     return ( <div className="grid-item sidebar-wrapper">
             {inventory.map((item,index)=>{

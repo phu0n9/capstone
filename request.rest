@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/inventory/?page=5
+GET http://localhost:5000/inventory?page=5
 
 
 
