@@ -3,45 +3,48 @@ const mongoose = require('mongoose')
 const cors = require('cors');
 const Inventory = require('./model/inventory.model')
 const path = require('path')
+const Pusher = require('pusher')
 
 require('dotenv').config()
 
 const app = express()
+const uri = process.env.ATLAS_URI
 
 const connection = mongoose.connection
 connection.once('open',() => {
     console.log("MongoDB database connection established successfully")
 })
-const inventoryWatch = Inventory.watch()
 
-const uri = process.env.ATLAS_URI
+connection.on('error', console.error.bind(console, 'Connection Error:'))
 
-mongoose.connect(uri,
-{
+mongoose.connect(uri,{
     useNewUrlParser:true,
     useCreateIndex:true,
     useUnifiedTopology: true,
     useFindAndModify: false
 })
 
+const inventoryWatch = Inventory.watch()
+
+const pusher = new Pusher({
+    appId: "1219725",
+    key: "2ccb32686bdc0f96f50a",
+    secret: "84a8c245f48597b3e0bb",
+    cluster: "ap1",
+    useTLS: true
+})
+const channel = 'tasks'
+
+const loginRouter = require('./routes/userLogin')
+const inventoryRouter = require('./routes/inventoryLoading')
+const PORT = process.env.PORT || 5000
+const httpServer = require('http').createServer(app).listen(PORT)
+
 app.use(cors())
 app.use(express.json())
 
-const loginRouter = require('./routes/userLogin')
-
 app.use('/login',loginRouter)
-
-const inventoryRouter = require('./routes/inventoryLoading')
 app.use('/inventory',inventoryRouter)
-
-const PORT = process.env.PORT || 5000
-const httpServer = require('http').createServer(app).listen(PORT)
-const io = require('socket.io')(httpServer,{
-    cors:{
-        origin: [`http://localhost:3000`],
-        methods: ["GET", "POST"],
-    },
-})
 
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,"client", "build")))
@@ -51,6 +54,12 @@ if (process.env.NODE_ENV === "production"){
     });
 }
 
+const io = require('socket.io')(httpServer,{
+    cors:{
+        origin: [`http://localhost:3000`],
+        methods: ["GET", "POST"],
+    },
+})
 io.on("connection",socket =>{
     console.log('server connected')
 
@@ -59,7 +68,6 @@ io.on("connection",socket =>{
     })
 
     socket.on('begin-search',delta =>{
-        console.log('server sending ',delta)
         socket.broadcast.emit('sending-search', delta)
     })
 
@@ -70,12 +78,6 @@ io.on("connection",socket =>{
             'userId':delta['userId']
         }
         await createInventory(content).catch(err => {console.log(err)})
-        inventoryWatch.on('change',()=>{
-            console.log('sending to front end')
-            socket.broadcast.emit('sending','hello')
-        })
-
-
         // console.log('server received ',delta['location'])
     })
 
@@ -98,3 +100,16 @@ io.on("connection",socket =>{
 async function createInventory(content){
     return await Inventory.create(content)
 }
+
+inventoryWatch.on('change',async (change)=>{
+    if(change.operationType === 'insert') {
+        const task = change.fullDocument
+        await pusher.trigger(
+            channel,
+            'inserted', 
+            {
+            // location: task.location
+            }
+        ).catch((error)=>{console.log(error)})
+    } 
+})
