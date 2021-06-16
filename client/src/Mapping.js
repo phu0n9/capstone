@@ -1,16 +1,16 @@
 import React,{useEffect,useState} from 'react'
-import {io} from 'socket.io-client'
+// import {io} from 'socket.io-client'
 
 export default function Mapping() {
-    const [socket,setSocket] = useState()
+    // const [socket,setSocket] = useState()
 
-    useEffect(() => {
-        const s = io(`http://localhost:5000`)
-        setSocket(s)
-        return () =>{
-            s.disconnect()  
-        }
-    }, [])  
+    // useEffect(() => {
+    //     const s = io(`http://localhost:5000`)
+    //     setSocket(s)
+    //     return () =>{
+    //         s.disconnect()  
+    //     }
+    // }, [])  
 
     // const handleChange = (event) => {
     //     setInventory(event.target.value);
