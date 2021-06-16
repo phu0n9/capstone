@@ -22,7 +22,7 @@ export default function SidebarBox({setClickPhoto}) {
             setPageNumber(prevInventory => prevInventory + 5)
         })
         if(node) observer.current.observe(node)
-    },[loading,hasMore,change])
+    },[loading,hasMore])
 
     // useEffect(() => {
     //     if(change){
