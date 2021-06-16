@@ -9,7 +9,8 @@ export default function SidebarBox({setClickPhoto}) {
         inventory,
         hasMore,
         error,
-        loading
+        loading,
+        change
     } = infinityScroll(pageNumber)
     
 
@@ -21,7 +22,13 @@ export default function SidebarBox({setClickPhoto}) {
             setPageNumber(prevInventory => prevInventory + 5)
         })
         if(node) observer.current.observe(node)
-    },[loading,hasMore])
+    },[loading,hasMore,change])
+
+    // useEffect(() => {
+    //     if(change){
+    //         setPageNumber(5)
+    //     }
+    // },[change])
 
     return ( <div className="grid-item sidebar-wrapper">
             {inventory.map((item,index)=>{
