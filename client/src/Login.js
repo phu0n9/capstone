@@ -11,14 +11,14 @@ export default function Login() {
           username:username,
           password:password
         }
-        await axios.post('http://localhost:5000/login',content)
+        await axios.post('https://schaeffler.herokuapp.com/login',content)
         .then(data =>{
           if(data.data === 'Incorrect password' || data.data === 'Cannot find user'){
             alert(data.data)
           }
           else{
             localStorage.setItem("userId",data.data)
-            window.location = "http://localhost:5000/homepage"
+            window.location = "/homepage"
           }
         })
         .catch(error => console.log(error))
