@@ -19,11 +19,11 @@ router.route('/').post(async (req, res) => {
     }
     try {
         await User.findOne({ username: req.body.username }, function(err, user) {
-            if (err) throw err
+            if (err) console.log(err)
             try{
                 // test a matching password
                 user.comparePassword(req.body.password, function(err, isMatch) {
-                    if (err) throw err
+                    if (err) console.log(err)
                     if(isMatch){
                         res.send(user._id)
                     }
