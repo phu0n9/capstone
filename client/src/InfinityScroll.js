@@ -21,7 +21,7 @@ export default function InfinityScroll(pageNumber) {
             setError(false)
             axios({
                 method:'GET',
-                url: 'http://localhost:5000/inventory',
+                url: 'https://schaeffler.herokuapp.com/inventory',
                 params:{page:5}
             })
             .then(res => {
@@ -45,7 +45,7 @@ export default function InfinityScroll(pageNumber) {
         // setChange(false)
         axios({
             method:'GET',
-            url: 'http://localhost:5000/inventory',
+            url: 'https://schaeffler.herokuapp.com/inventory',
             params:{page:pageNumber}
         })
         .then(res => {
