@@ -82,8 +82,9 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
                 })
             }
         }
+        // http://localhost:5000/inventory
         else{
-            getApi('http://localhost:5000/inventory',{page:pageNumber})
+            getApi(heroku,{page:pageNumber})
         }
     }
 
