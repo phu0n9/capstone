@@ -15,6 +15,8 @@ connection.once('open',() => {
     console.log("MongoDB database connection established successfully")
 })
 
+const carSocketId = {}
+
 connection.on('error', console.error.bind(console, 'Connection Error:'))
 
 mongoose.connect(uri,{
@@ -37,14 +39,18 @@ const channel = 'tasks'
 
 const loginRouter = require('./routes/userLogin')
 const inventoryRouter = require('./routes/inventoryLoading')
+const sortRouter = require('./routes/sort')
+
 const PORT = process.env.PORT || 5000
 const httpServer = require('http').createServer(app).listen(PORT)
 
 app.use(cors())
 app.use(express.json())
 
+
 app.use('/login',loginRouter)
 app.use('/inventory',inventoryRouter)
+app.use('/sort',sortRouter)
 
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,"client", "build")))
@@ -60,6 +66,7 @@ const io = require('socket.io')(httpServer,{
         methods: ["GET", "POST"],
     },
 })
+
 io.on("connection",socket =>{
     console.log('server connected')
 
@@ -90,16 +97,31 @@ io.on("connection",socket =>{
         //     socket.broadcast.emit('receive-changes',delta)
         // })
 
-        //TODO: user login with token, infinity scroll, connect database & load data, raspberry pi connect
+        //TODO: user login with passport, query, raspberry pi connect
 
-    socket.on('disconnect',function(){
-        console.log('Disconnected!')
+    socket.on('car-socket-id',(delta)=>{
+        carSocketId[socket.id] = delta
+    })
+
+    socket.on('disconnect',()=>{
+        console.log('Disconnected! '+socket.id)
+        if (socket.id === carSocketId[socket.id]){
+            socket.broadcast.emit('car-offline',false)
+            console.log('true')
+            delete carSocketId[socket.id]
+        }
+    })
+
+    socket.on('error', (err) => {
+        console.log(err)
     })
 })
 
 async function createInventory(content){
     return await Inventory.create(content)
 }
+
+
 
 inventoryWatch.on('change',async (change)=>{
     if(change.operationType === 'insert') {

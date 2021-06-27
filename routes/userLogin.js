@@ -3,14 +3,15 @@ const User = require('../model/user.model')
 
 // // create a user a new user
 // var testUser = new User({
-//     username: 'hello',
-//     password: 'hello123'
+//     username: 'giang',
+//     password: 'giang'
 // });
      
 // // save the user to database
 // testUser.save(function(err) {
 //     if (err) throw err;
-// });
+// })
+
 
 router.route('/').post(async (req, res) => {
     const checkUser = await User.findOne({username:req.body.username})

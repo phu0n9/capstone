@@ -23,4 +23,13 @@ Content-Type: application/json
 GET http://localhost:5000/inventory?page=5
 
 
+###
+GET http://localhost:5000/sort/sortByLocation?location=1.1.13
+
+###
+GET http://localhost:5000/sort/sortByUserId?userId=60c063c994a29c1da0924d7d
+
+###
+GET http://localhost:5000/sort/sortByLocation?location=1.1.1
+
 

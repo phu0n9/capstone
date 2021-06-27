@@ -2,13 +2,13 @@ import {useEffect,useState} from 'react'
 import axios from 'axios'
 import Pusher from 'pusher-js'
 
-export default function InfinityScroll(pageNumber) {
+export default function InfinityScroll(pageNumber,keyword,selection) {
     const [loading,setLoading] = useState(true)
     const [error,setError] = useState(false)
     const [inventory,setInventory] = useState([])
     const [hasMore,setHasMore] = useState(false)       
-    const [change,setChange] = useState(false)
-    
+    const heroku = 'https://schaeffler.herokuapp.com/inventory'
+    // 'http://localhost:5000/inventory'
     useEffect(() =>{
         const pusher = new Pusher('2ccb32686bdc0f96f50a',{
             'cluster':'ap1',
@@ -16,37 +16,35 @@ export default function InfinityScroll(pageNumber) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            // setChange(true)
-            setLoading(true)
-            setError(false)
-            axios({
-                method:'GET',
-                url: 'https://schaeffler.herokuapp.com/inventory',
-                params:{page:5}
-            })
-            .then(res => {
-                setInventory(() =>{
-                    return [...new Set([...inventory,...res.data.map(i => i)])]
+            // if(keyword != null){
+
+            // }
+            // else {
+                axios({
+                    method:'GET',
+                    url: heroku,
+                    params:{page:5}
                 })
-                setHasMore(res.data.length > 0)
-                setLoading(false)
-            })
-            .catch(e =>{
-                setError(true)
-                console.log('Error: '+e)
-            })
+                .then(res => {
+                    setInventory(() =>{
+                        return [...new Set([...'',...res.data.map(i => i)])]
+                    })
+                })
+                .catch(e =>{
+                    setError(true)
+                    console.log('Error: '+e)
+                })
+            // } 
         })
         return () => channel.unbind('inserted')
-    },[inventory])
+    },[keyword])
 
-    const refresh = () =>{
-        setLoading(true)
-        setError(false)
-        // setChange(false)
+
+    function getApi(URL,paramsDict){
         axios({
             method:'GET',
-            url: 'https://schaeffler.herokuapp.com/inventory',
-            params:{page:pageNumber}
+            url: URL,
+            params:paramsDict
         })
         .then(res => {
             setInventory(prevInventory =>{
@@ -61,7 +59,35 @@ export default function InfinityScroll(pageNumber) {
         })
     }
 
-    useEffect((refresh),[pageNumber])
+    const refresh = () =>{
+        setLoading(true)
+        setError(false)
+        if(keyword != null){
+            if (selection === "location"){
+                axios({
+                    method:'GET',
+                    url: 'http://localhost:5000/sort',
+                    params:{location:keyword}
+                })
+                .then(res => {
+                    setInventory(() =>{
+                        return [...new Set([...'',...res.data.map(i => i)])]
+                    })
+                    setHasMore(res.data.length > 0)
+                    setLoading(false)
+                })
+                .catch(e =>{
+                    setError(true)
+                    console.log('Error: '+e)
+                })
+            }
+        }
+        else{
+            getApi('http://localhost:5000/inventory',{page:pageNumber})
+        }
+    }
 
-    return {loading,hasMore,error,inventory,change}
+    useEffect((refresh),[pageNumber,keyword,selection])
+
+    return {loading,hasMore,error,inventory}
 }
