@@ -6,9 +6,11 @@ export default function SearchBar({userId}) {
     const [socket,setSocket] = useState()
     const [clicked,setClick] = useState(false)
     const [keyword,setKeyword] = useState()
+    const heroku = 'https://schaeffler.herokuapp.com/'
 
+    // 'http://localhost:5000/'
     useEffect(() => {
-        const s = io(`https://schaeffler.herokuapp.com/`)
+        const s = io(heroku)
         setSocket(s)
         return () =>{
             s.disconnect()  
@@ -38,15 +40,17 @@ export default function SearchBar({userId}) {
     },[socket,keyword,clicked,userId])
 
     return (
-        <form className="search-bar">
-        <input
-            type="text"
-            placeholder="Search inventory"
-            className="search-box"
-            onChange={onSearching}
-            value={keyword}
-        />
-        <button type="button" className="search-btn" onClick={onSearchClickButton}>Search</button>
-    </form>
+        <span className="search-bar">
+        <form>
+            <input
+                type="search"
+                placeholder="Search inventory"
+                className="search-box"
+                onChange={onSearching}
+                value={keyword}
+            />
+            <button type="button" className="search-btn" onClick={onSearchClickButton}>Search</button>
+        </form>
+        </span>
     )
 }
