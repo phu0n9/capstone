@@ -27,21 +27,16 @@ export default function Login() {
 
     return (
         <div className="login-wrapper">
-      <h1>Logo</h1>
-      <form onSubmit={handleSubmit} method="post" action="/login">
-        <label>
-          <p>Username</p>
-          <input type="text" onChange={e => setUserName(e.target.value)} required/>
-        </label>
-        <br></br>
-        <label>
-          <p>Password</p>
-          <input type="password" onChange={e => setPassword(e.target.value)} required/>
-        </label>
-        <div>
-          <button type="submit">Submit</button>
-        </div>
-      </form>
+          <div>    </div>
+        <form onSubmit={handleSubmit} method="post" action="/login" className="form-wrapper">
+        <img src="schaeffler-logo.jpg" className="login-logo"/><br></br>
+            <input type="text" placeholder="username" className="input-style" onChange={e => setUserName(e.target.value)} required/>
+          <br></br>
+            <input type="password" placeholder="password" className="input-style" onChange={e => setPassword(e.target.value)} required/>
+          <div>
+            <button type="submit" className="login-btn">LOGIN</button>
+          </div>
+        </form>
     </div>
     )
 }
