@@ -48,6 +48,7 @@ code {
 .input-style{
     background-color: rgb(228, 227, 227);
     height: 50px;
+    width: 210px;
     margin: 20px 140px;    
     border:none;
     text-align: center;
