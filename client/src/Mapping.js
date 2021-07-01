@@ -1,7 +1,7 @@
-import React,{useEffect,useState} from 'react'
+import React from 'react'
 // import {io} from 'socket.io-client'
 
-export default function Mapping() {
+export default function Mapping({onClick,setOnClick}) {
     // const [socket,setSocket] = useState()
 
     // useEffect(() => {
@@ -65,9 +65,12 @@ export default function Mapping() {
     //         socket.off('receive-changes',handler)
     //     }
     // },[socket,map])
+    const mappingOnClick = (()=>{
+        setOnClick(false)
+    })
  
     return (
-        <div className="mapping-wrapper">
+        <div  className="mapping-wrapper" onClick={mappingOnClick} style={onClick ? {height: 300}: {height: 455}} >
             {/* <label htmlFor="inventoryName">Inventory adress:</label><br></br>
             <input type="text" value={inventory} placeholder="Inventory" onChange={handleChange}/><br></br>
             <input type="file" name="picture" value={file} onChange={handleFile}/><br></br><span></span>

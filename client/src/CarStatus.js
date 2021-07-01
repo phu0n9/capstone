@@ -9,9 +9,9 @@ export default function Status() {
     const [connection,setConnection] = useState(false)
     const [connectTitle,setConnectTitle] = useState('offline')
     const heroku = 'https://schaeffler.herokuapp.com/'
-    // http://localhost:5000/
+    
     useEffect(() => {
-        const s = io(heroku)
+        const s = io('http://localhost:5000/')
         setSocket(s)
         return () =>{
             s.disconnect()  

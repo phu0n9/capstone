@@ -8,6 +8,26 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
     const [inventory,setInventory] = useState([])
     const [hasMore,setHasMore] = useState(false)       
     const heroku = 'https://schaeffler.herokuapp.com/inventory'
+
+    function fetchApi(URL,paramsDict){
+        axios({
+            method:'GET',
+            url: URL,
+            params:paramsDict
+        })
+        .then(res => {
+            setInventory(() =>{
+                return [...new Set([...'',...res.data.map(i => i)])]
+            })
+            // setHasMore(res.data.length > 0)
+            // setLoading(false)
+        })
+        .catch(e =>{
+            setError(true)
+            console.log('Error: '+e)
+        })
+    }
+    
     // 'http://localhost:5000/inventory'
     useEffect(() =>{
         const pusher = new Pusher('2ccb32686bdc0f96f50a',{
@@ -16,79 +36,52 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            // if(keyword != null){
-
-            // }
-            // else {
-                axios({
-                    method:'GET',
-                    url: heroku,
-                    params:{page:5}
-                })
-                .then(res => {
-                    setInventory(() =>{
-                        return [...new Set([...'',...res.data.map(i => i)])]
-                    })
-                })
-                .catch(e =>{
-                    setError(true)
-                    console.log('Error: '+e)
-                })
-            // } 
+            fetchApi('http://localhost:5000/inventory',{page:5})
         })
         return () => channel.unbind('inserted')
     },[keyword])
 
 
-    function getApi(URL,paramsDict){
-        axios({
-            method:'GET',
-            url: URL,
-            params:paramsDict
-        })
-        .then(res => {
-            setInventory(prevInventory =>{
-                return [...new Set([...prevInventory,...res.data.map(i => i)])]
-            })
-            setHasMore(res.data.length > 0)
-            setLoading(false)
-        })
-        .catch(e =>{
-            setError(true)
-            console.log('Error: '+e)
-        })
-    }
-
-    const refresh = () =>{
-        setLoading(true)
-        setError(false)
-        if(keyword != null){
-            if (selection === "location"){
-                axios({
-                    method:'GET',
-                    url: 'http://localhost:5000/sort',
-                    params:{location:keyword}
-                })
-                .then(res => {
-                    setInventory(() =>{
-                        return [...new Set([...'',...res.data.map(i => i)])]
-                    })
-                    setHasMore(res.data.length > 0)
-                    setLoading(false)
-                })
-                .catch(e =>{
-                    setError(true)
-                    console.log('Error: '+e)
-                })
+    useEffect(() =>{
+        if(keyword !== undefined){
+            switch(selection){
+                case "location":
+                    fetchApi('http://localhost:5000/sort/sortByLocation',{location:keyword})
+                    break
+                case "userId":
+                    fetchApi('http://localhost:5000/sort/sortByUserId',{userId:keyword})
+                    break
+                case "date":
+                    fetchApi('http://localhost:5000/sort/sortByTime',{time:keyword})
+                    break
+                default:
+                    break
             }
         }
-        // http://localhost:5000/inventory
-        else{
-            getApi(heroku,{page:pageNumber})
-        }
-    }
+    },[keyword,selection])
 
-    useEffect((refresh),[pageNumber,keyword,selection])
+    useEffect(() =>{
+        setLoading(true)
+        setError(false)
+        if(keyword === ''){
+            axios({
+                method:'GET',
+                url: 'http://localhost:5000/inventory',
+                params:{page:pageNumber}
+            })
+            .then(res => {
+                setInventory(prevInventory =>{
+                    return [...new Set([...prevInventory,...res.data.map(i => i)])]
+                })
+                    setHasMore(res.data.length > 0)
+                    setLoading(false)
+            })
+            .catch(e =>{
+                setError(true)
+                console.log('Error: '+e)
+            })
+        }
+    },[pageNumber,keyword])
 
     return {loading,hasMore,error,inventory}
 }

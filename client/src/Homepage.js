@@ -10,10 +10,12 @@ import {useState,useEffect} from 'react'
 export default function Homepage() {
     const [clickPhoto,setClickPhoto] = useState()
     const [userId,setUserId] = useState()
+    const [onClick,setOnClick] = useState(false)
 
     useEffect(()=>{
         setUserId(localStorage.getItem('userId'))
     },[])
+
 
     return (
         <>
@@ -29,14 +31,19 @@ export default function Homepage() {
         <div className="grid-container">
             <SidebarBox  setClickPhoto={setClickPhoto}/>
             <div className="grid-item">
-                <Mapping />
-                <PhotoDisplay clickPhoto={clickPhoto}/>
+                <Mapping onClick={onClick} setOnClick={setOnClick}/>
+                <PhotoDisplay clickPhoto={clickPhoto} onClick={onClick} setOnClick={setOnClick}/>
             </div>
             <div className="grid-item">
                 <CarStatus/>
                 <DroneStatus/>
             </div>
         </div>
+        <footer>
+            <p>
+            © 2021 Schaeffler All rights reserved.<br/>
+            </p>
+        </footer>
         </>
     )
 }

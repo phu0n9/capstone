@@ -6,12 +6,11 @@ import 'react-calendar/dist/Calendar.css'
 export default function SidebarBox({setClickPhoto}) {
     const observer = useRef()
     const [pageNumber,setPageNumber] = useState(5)
-    const [keyword,setKeyword] = useState()
-    const [keypress,setKeypress] = useState(false)
+    const [keyword,setKeyword] = useState('')
     const [selection,setSelection] = useState("location")
-    // const [value, setCalendar] = useState(new Date())
-    // const [type,setType] = useState("search")
-    // const [pType,setPType] = useState("hidden")
+    const [enableCalendar,setEnableCalendar] = useState(false)
+    const [value, setCalendar] = useState(new Date())
+    const [buttonType,setButtonType] = useState(false)
     
     const {
         inventory,
@@ -35,63 +34,55 @@ export default function SidebarBox({setClickPhoto}) {
         setKeyword(e.target.value)
     })
 
-    const handleKeyPress = ((e) =>{
-        if(e.key === "Enter"){
-            setKeypress(true)
-            console.log("keyword: "+  keyword)
-        }
-    })
-
     const handleSelection = ((e) =>{
         setSelection(e.target.value)
     })
 
-    useEffect(() =>{
-        if(keypress === true){
-            if(keyword === undefined)  {
-                alert("Please enter a keyword")
-            }
-            else{
-                console.log("sending to back end")
-                if(selection === "userId"){
+    useEffect(()=>{
+        
+        switch(selection){
+            case "date":
+                setEnableCalendar(true)
+                setKeyword(value.getFullYear()+'-' + (value.getMonth()+1) + '-'+value.getDate())
+                setButtonType(true)
+                break
+            case "userId":
+                setEnableCalendar(false)
+                setButtonType(true)
+                if (keyword !== undefined) {
                     setKeyword(localStorage.getItem('userId'))
                 }
-                // setKeypress(false)
-                // setKeyword("")
-            }
+                break
+            default:
+                if(keyword === localStorage.getItem('userId')) {
+                    setKeyword("")
+                }
+                setEnableCalendar(false)
+                setButtonType(false)
+                break
         }
-    },[keyword,keypress,selection])
-
-    // useEffect(()=>{
-    //     if(selection ==="date"){
-    //         console.log("this")
-    //         setType("hidden")
-    //         setKeyword(value)
-    //         setPType("text")
-    //     }
-    //     else{
-    //         setType("search")
-    //         setPType("hidden")
-    //     }
-    // },[selection,value])
+    },[selection,value,keyword])
 
 
     return ( 
         <div className="grid-item sidebar-wrapper">
             <div className="search-item-bar">
-                <input
-                    type="search"
-                    placeholder="Search existing item"
-                    className="search-item"
-                    onChange={handleItemSearch}
-                    onKeyUp={handleKeyPress}
-                    value ={keyword}
-                />
-                 {/* <Calendar
+                {enableCalendar ?
+                 <Calendar
                     className="calendar"
                     onChange={setCalendar}
                     value={value}
-                /> */}
+                    next2Label=""
+                    prev2Label=""
+                /> : 
+                <input
+                    type={buttonType ? "hidden": "search"}
+                    placeholder="Search existing item"
+                    className="search-item"
+                    onChange={handleItemSearch}
+                    value ={keyword}
+                    disabled={buttonType ? "disabled": ""}
+                />}
             <p className="sort-title">Sort by:</p>
             <select name="sort" className="sort-select" onChange={handleSelection} value={selection}>
                 <option value="location" selected>Location</option>
