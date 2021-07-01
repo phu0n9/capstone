@@ -4,22 +4,31 @@ import {io} from 'socket.io-client'
 export default function SearchBar({userId}) {
   
     const [socket,setSocket] = useState()
-    const [clicked,setClick] = useState(false)
+    const [pressed,setPress] = useState(false)
     const [keyword,setKeyword] = useState()
+    const [buttonClicked,setButtonClicked] = useState(false)
+    const [clicked,setClicked] = useState(false)
     const heroku = 'https://schaeffler.herokuapp.com/'
 
     // 'http://localhost:5000/'
     useEffect(() => {
-        const s = io(heroku)
+        const s = io('http://localhost:5000/')
         setSocket(s)
         return () =>{
             s.disconnect()  
         }
     }, []) 
 
+    const onPress = (event) =>
+    {
+        if(event.key === 'Enter'){
+            setPress(true)
+        }
+    }
+
     const onSearchClickButton = () =>
     {
-        setClick(!clicked)
+        setClicked(true)
     }
 
     const onSearching = (event) =>{
@@ -28,29 +37,44 @@ export default function SearchBar({userId}) {
 
     useEffect(() =>{
         if (socket === null || keyword === null) return
-        if(clicked === true && keyword !== null){
-            const key = {
-                "keyword":keyword,
-                "userId":userId
+
+        if((pressed === true ) || (buttonClicked === true)){
+            if (keyword !== ""){
+                const key = {
+                    "keyword":keyword,
+                    "userId":userId
+                }
+                socket.emit("begin-search",key)
+                setPress(false)
+                setButtonClicked(false)
+                setKeyword("")
             }
-            socket.emit("begin-search",key)
-            setClick(!clicked)
-            setKeyword("")
+            else{
+                alert("Please enter a keyword")
+            } 
         }
-    },[socket,keyword,clicked,userId])
+    },[socket,keyword,pressed,userId,buttonClicked])
+
+    const onInputClick = (()=>{
+        setClicked(true)
+    })
 
     return (
-        <span className="search-bar">
-        <form>
+        <span >
             <input
                 type="search"
                 placeholder="Search inventory"
                 className="search-box"
                 onChange={onSearching}
                 value={keyword}
+                onKeyPress={onPress}
+                onClick={onInputClick}
+                style = {clicked ? {width:500} : {width:300}}
             />
-            <button type="button" className="search-btn" onClick={onSearchClickButton}>Search</button>
-        </form>
+            <button type="button" className="search-btn" onClick={onSearchClickButton}>          
+                <img src="search.png" alt="manifying-glass" />
+            </button>
+        
         </span>
     )
 }

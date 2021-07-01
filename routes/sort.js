@@ -1,30 +1,36 @@
 const router = require('express').Router()
 const Inventory = require('../model/inventory.model')
+const mongoose = require('mongoose')
 
-router.route('').get(async (req,res) => {
+router.route('/sortByLocation').get(async (req,res) => {
     await Inventory.find({'location':req.query.location})
     .exec((err, inventory) => {
-        if (err) return next(err)
+        if (err) return (err)
         res.send(inventory) // return data JSON
     })
 })
 
-router.route('').get((req,res) => {
-    Inventory.find({'userId':req.query.userId})
-    .then(userId => res.json(userId))
-    .catch(err => res.status(400).json('Error: '+err))
+router.route('/sortByUserId').get(async (req,res) => {
+    await Inventory.find({'userId':req.query.userId})
+    .exec((err, inventory) => {
+        if (err) return err
+        res.send(inventory) // return data JSON
+    })
 })
 
-router.route('').get((req,res) => {
-    Inventory.find({'createdAt':
+router.route('/sortByTime').get(async (req,res) => {
+    await Inventory.find({'createdAt':
         {
-            "$gte": new Date(req.query.time)
+            '$gte' : [
+                { "$dateFromString": { "format": "%m-%d-%Y" }},
+                ISODate(req.query.time)
+              ]
         }
     })
-    .then(time => {
-        res.json(time)
+    .exec((err, inventory) => {
+        if (err) return err
+        res.send(inventory) // return data JSON
     })
-    .catch(err => res.status(400).json('Error: '+err));
 })
 
 module.exports = router

@@ -62,27 +62,32 @@ code {
 
 /* Search bar style */
 
-.search-bar{
-    margin: 0 5%;
-    width: 55%;
-    /* border: 1px solid black; */
-    padding: 10px;
-    background-color:rgb(218, 218, 218);
-    border-radius: 10px;
-    display:inline-block;
+.search-box{
+    margin: 5px auto;
+    width: 100%;
+    padding: 10px 35px 10px 15px;
+    border: none;
+    border-radius: 100px;
+    border: 1px solid black;
+    outline: none;
+    transition: width 1s;
 }
 
-.search-box{
-    width: 80%;
-    border-radius: 5px;
-    margin-left: 2%;
+.search-box:focus{
+    background-color:rgb(236, 236, 236);
 }
 
 .search-btn{
-    width: 15%;
-    border-radius: 10px;
-    margin-left: 2%;
+    background: transparent;
+    border: none;
+    outline: none;
+    margin-left: -33px;
 
+}
+.search-btn img{
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
 }
 
 /* grid column */
@@ -152,8 +157,15 @@ code {
 
 .search-item{
     width: 200px;
-    height:30px;
-    border-radius: 5px;
+    height:40px;
+    padding: 10px 35px 10px 15px;
+    border-radius: 10px;
+    border: 1px solid black;
+    font-size: 15px;
+}
+
+.search-item:focus{
+    background-color: rgb(235, 232, 232);
 }
 
 .sort-title{
@@ -168,32 +180,42 @@ code {
     margin-top: 3px;
 }
 
+.calendar{
+    font-size: 12px;
+}
 
 
 /* mapping */
 .mapping-wrapper{
     margin: auto;
     width: 500;
-    height: 300px;
+    height: 455px;
     border: 1px solid black;
     border-radius: 5px;
     padding: 10px;
+    transition: height 2s;
 }
 
 /* photo display wrapper */
-.photoDisplay-wrapper{
+.photo-display-wrapper{
     margin: auto;
     width: 500;
-    height: 455px;
+    height: 300px;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid black;
     margin-top: 3px;
+    transition: height 2s;
 }
 
 .photo-display{
     width: 590px;
     height: 430px;
+}
+
+.minimized-photo-display{
+    width: 350px;
+    height: 250px;
 }
 
 /* status wrapper */
@@ -331,6 +353,17 @@ input:checked + .slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+
+/* footer */
+footer {
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   color: rgb(85, 85, 85);
+   text-align: center;
+   padding-top: 20px;
 }
 
 @media only screen and (max-width:800px) {

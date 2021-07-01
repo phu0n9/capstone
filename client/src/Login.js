@@ -12,7 +12,7 @@ export default function Login() {
           username:username,
           password:password
         }
-        await axios.post(heroku,content)
+        await axios.post('http://localhost:5000/login',content)
         .then(data =>{
           if(data.data === 'Incorrect password' || data.data === 'Cannot find user'){
             alert(data.data)
@@ -29,7 +29,7 @@ export default function Login() {
         <div className="login-wrapper">
           <div>    </div>
         <form onSubmit={handleSubmit} method="post" action="/login" className="form-wrapper">
-        <img src="schaeffler-logo.jpg" className="login-logo"/><br></br>
+        <img src="schaeffler-logo.jpg" className="login-logo" alt="login-logo"/><br></br>
             <input type="text" placeholder="username" className="input-style" onChange={e => setUserName(e.target.value)} required/>
           <br></br>
             <input type="password" placeholder="password" className="input-style" onChange={e => setPassword(e.target.value)} required/>
