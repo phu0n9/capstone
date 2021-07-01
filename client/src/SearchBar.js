@@ -72,7 +72,7 @@ export default function SearchBar({userId}) {
                 style = {clicked ? {width:500} : {width:300}}
             />
             <button type="button" className="search-btn" onClick={onSearchClickButton}>          
-                <img src="search.png" alt="manifying-glass" />
+                <img src="search.png" alt="manifying-glass" className="manifying-glass" />
             </button>
         
         </span>

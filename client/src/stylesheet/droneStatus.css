@@ -3,8 +3,10 @@
     width: 500;
     height: 505px;
     margin: auto;
-    border: 1px solid black;
-    border-radius: 5px;
+    border-radius: 16px;
     padding: 10px;
     margin-top: 5px;
+    border: 1px solid #acabab;
+    border-bottom: 6px solid #acabab;
+
 }

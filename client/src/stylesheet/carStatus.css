@@ -1,12 +1,13 @@
 /* status wrapper */
 .status-wrapper{
-    border-radius: 5px;
-    border: 1px solid black;
+    border-radius: 16px;
     width: 500;
     height: 250px;
     padding: 10px;
     margin: auto;
     font-size: 15px;
+    border: 1px solid #acabab;
+    border-bottom: 6px solid #acabab;    
 }
 
 .img-container{

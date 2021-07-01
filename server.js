@@ -72,6 +72,7 @@ io.on("connection",socket =>{
 
     socket.on('raspberry-send',delta =>{
         socket.broadcast.emit('receive-raspberry',delta)
+        console.log("this "+delta['velocity'])
     })
 
     socket.on('begin-search',delta =>{

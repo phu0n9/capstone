@@ -101,7 +101,7 @@ export default function SidebarBox({setClickPhoto}) {
                     return <div className="inventory-item">
                         <div key={item.location}>Location: {item.location}</div>
                         <img key={item.photo} src={item.photo} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
-                </div>
+                    </div>
                 }
             })}
             <div>{loading && 'Loading...'}</div>
