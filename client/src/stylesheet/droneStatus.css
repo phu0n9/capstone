@@ -1,0 +1,10 @@
+/* drone status wrapper */
+.droneStatus-wrapper{
+    width: 500;
+    height: 505px;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+}

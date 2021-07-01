@@ -1,0 +1,57 @@
+/* side bar box  */
+.sidebar-wrapper{
+    width: 70%;
+    height: 20cm;
+    border: 1px solid black;
+    padding: 10px;
+    overflow-y: scroll;
+    border-radius: 5px;
+    background-color: rgb(216, 216, 216);
+}
+
+.inventory-item{
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color:white;
+}
+
+.img-sideBar{
+    width: 50%;
+}
+
+.search-item-bar{
+    background-color: white;
+    margin-bottom: 5px;
+    padding: 3px 3px 0 3px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.search-item{
+    width: 200px;
+    height:40px;
+    padding: 10px 35px 10px 15px;
+    border-radius: 10px;
+    border: 1px solid black;
+    font-size: 15px;
+}
+
+.search-item:focus{
+    background-color: rgb(235, 232, 232);
+}
+
+.sort-title{
+    font-size: 15px;
+    display: inline-block;
+    margin-top: 3px;
+}
+
+.sort-select{
+    font-size:15px;
+    float:right;
+    margin-top: 3px;
+}
+
+.calendar{
+    font-size: 12px;
+}
