@@ -1,0 +1,29 @@
+/* Search bar style */
+
+.search-box{
+    margin: 5px auto;
+    width: 100%;
+    padding: 10px 35px 10px 15px;
+    border: none;
+    border-radius: 100px;
+    border: 1px solid black;
+    outline: none;
+    transition: width 1s;
+}
+
+.search-box:focus{
+    background-color:rgb(236, 236, 236);
+}
+
+.search-btn{
+    background: transparent;
+    border: none;
+    outline: none;
+    margin-left: -33px;
+
+}
+.search-btn img{
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+}

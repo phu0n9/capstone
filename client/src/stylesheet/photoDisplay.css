@@ -1,0 +1,21 @@
+/* photo display wrapper */
+.photo-display-wrapper{
+    margin: auto;
+    width: 500;
+    height: 300px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid black;
+    margin-top: 3px;
+    transition: height 2s;
+}
+
+.photo-display{
+    width: 590px;
+    height: 430px;
+}
+
+.minimized-photo-display{
+    width: 350px;
+    height: 250px;
+}
