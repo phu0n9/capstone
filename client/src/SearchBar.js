@@ -7,12 +7,12 @@ export default function SearchBar({userId}) {
     const [pressed,setPress] = useState(false)
     const [keyword,setKeyword] = useState()
     const [buttonClicked,setButtonClicked] = useState(false)
-    const [clicked,setClicked] = useState(false)
+    // const [clicked,setClicked] = useState(false)
     const heroku = 'https://schaeffler.herokuapp.com/'
 
     // 'http://localhost:5000/'
     useEffect(() => {
-        const s = io('http://localhost:5000/')
+        const s = io(heroku)
         setSocket(s)
         return () =>{
             s.disconnect()  
@@ -28,7 +28,8 @@ export default function SearchBar({userId}) {
 
     const onSearchClickButton = () =>
     {
-        setClicked(true)
+        // setClicked(true)
+        setButtonClicked(true)
     }
 
     const onSearching = (event) =>{
@@ -55,9 +56,9 @@ export default function SearchBar({userId}) {
         }
     },[socket,keyword,pressed,userId,buttonClicked])
 
-    const onInputClick = (()=>{
-        setClicked(true)
-    })
+    // const onInputClick = (()=>{
+    //     setClicked(true)
+    // })
 
     return (
         <span >
@@ -68,11 +69,11 @@ export default function SearchBar({userId}) {
                 onChange={onSearching}
                 value={keyword}
                 onKeyPress={onPress}
-                onClick={onInputClick}
-                style = {clicked ? {width:500} : {width:300}}
+                // onClick={onInputClick}
+                // style = {clicked ? {width:450} : {width:300}}
             />
             <button type="button" className="search-btn" onClick={onSearchClickButton}>          
-                <img src="search.png" alt="manifying-glass" className="manifying-glass" />
+                <img src="search.png" alt="manifying-glass" />
             </button>
         
         </span>

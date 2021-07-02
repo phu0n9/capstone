@@ -1,13 +1,13 @@
 /* setting wrapper */
 .setting-wrapper{
-    background-color: rgb(255, 255, 255);
     border-radius: 13px;
-    width: 100px;
+    width: 120px;
     height: 40px;
-    display: inline-block;
-    margin: auto;
+    margin-top: 10px;
     border: 1px solid #acabab;
     border-bottom: 4px solid #acabab; 
+    margin-left: 350px;
+    float: right;
 }
 
 .img-wrapper{
@@ -15,10 +15,11 @@
     padding-top: 10px;
     width:30px;
     height:30px;
+    margin-left: 6px;
 }
 
 .logo{
-    width: 10%;
+    width: 15%;
     height:100%;
-    margin: 3px auto;
+    margin: 5px 30px;
 }
