@@ -20,14 +20,16 @@ export default function Homepage() {
     return (
         <>
         <span className="grid-container">
-            <img src="schaeffler.png" alt="logo" className="logo"/>
+            <img src="schaeffler-logo.jpg" alt="logo" className="logo"/>
             <SearchBar userId={userId}/>
             <Setting/>
-            <span className="switch">
-                <input type="checkbox"/>
-                <span className="slider round"></span>
-            </span>
+            {/* <label class="switch">
+                <input type="checkbox" checked/>
+                <span class="slider round"></span>
+            </label> */}
         </span>
+        
+        
         <div className="grid-container">
             <SidebarBox  setClickPhoto={setClickPhoto}/>
             <div className="grid-item">

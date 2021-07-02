@@ -94,12 +94,14 @@ export default function SidebarBox({setClickPhoto}) {
                 if(inventory.length === index +1){
                     return <div className="inventory-item">
                         <div key={item.location} ref={lastInventory}>Location: {item.location}</div>
+                        <div>Create At: {item.createdAt}</div>
                         <img key={item.photo} ref={lastInventory} src={item.photo} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
                     </div>
                 }
                 else{
                     return <div className="inventory-item">
                         <div key={item.location}>Location: {item.location}</div>
+                        <div>Create At: {item.createdAt}</div>
                         <img key={item.photo} src={item.photo} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
                     </div>
                 }

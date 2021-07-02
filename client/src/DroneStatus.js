@@ -6,9 +6,9 @@ export default function DroneStatus() {
     const [socket,setSocket] = useState()
     const [battery,setBattery] = useState(0)
     const heroku = 'https://schaeffler.herokuapp.com/'
-
+    // 'http://localhost:5000/'
     useEffect(() => {
-        const s = io('http://localhost:5000/')
+        const s = io(heroku)
         setSocket(s)
         return () =>{
             s.disconnect()  

@@ -36,7 +36,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            fetchApi('http://localhost:5000/inventory',{page:5})
+            fetchApi(heroku,{page:5})
         })
         return () => channel.unbind('inserted')
     },[keyword])
@@ -46,13 +46,13 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         if(keyword !== undefined){
             switch(selection){
                 case "location":
-                    fetchApi('http://localhost:5000/sort/sortByLocation',{location:keyword})
+                    fetchApi('https://schaeffler.herokuapp.com/sort/sortByLocation',{location:keyword})
                     break
                 case "userId":
-                    fetchApi('http://localhost:5000/sort/sortByUserId',{userId:keyword})
+                    fetchApi('https://schaeffler.herokuapp.com/sort/sortByUserId',{userId:keyword})
                     break
                 case "date":
-                    fetchApi('http://localhost:5000/sort/sortByTime',{time:keyword})
+                    fetchApi('https://schaeffler.herokuapp.com/sort/sortByTime',{time:keyword})
                     break
                 default:
                     break
@@ -66,7 +66,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         if(keyword === ''){
             axios({
                 method:'GET',
-                url: 'http://localhost:5000/inventory',
+                url: heroku,
                 params:{page:pageNumber}
             })
             .then(res => {
