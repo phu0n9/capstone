@@ -7,6 +7,7 @@ import PhotoDisplay from './PhotoDisplay'
 import SidebarBox from './SidebarBox'
 import Setting from './Setting'
 import {useState,useEffect} from 'react'
+
 export default function Homepage() {
     const [clickPhoto,setClickPhoto] = useState()
     const [userId,setUserId] = useState()

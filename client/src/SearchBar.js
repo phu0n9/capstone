@@ -12,7 +12,7 @@ export default function SearchBar({userId}) {
 
     // 'http://localhost:5000/'
     useEffect(() => {
-        const s = io(heroku)
+        const s = io('http://localhost:5000/')
         setSocket(s)
         return () =>{
             s.disconnect()  
@@ -43,7 +43,8 @@ export default function SearchBar({userId}) {
             if (keyword !== ""){
                 const key = {
                     "keyword":keyword,
-                    "userId":userId
+                    "userId":userId,
+                    "socketId":socket.id
                 }
                 socket.emit("begin-search",key)
                 setPress(false)
@@ -59,6 +60,18 @@ export default function SearchBar({userId}) {
     // const onInputClick = (()=>{
     //     setClicked(true)
     // })
+    
+    useEffect(() =>{
+        if(socket == null) return
+        const handler = (delta) =>{
+            console.log(delta)
+        }
+        socket.on('popup',handler)
+
+        return () =>{
+            socket.off('popup',handler)
+        }
+    },[socket])
 
     return (
         <span >
