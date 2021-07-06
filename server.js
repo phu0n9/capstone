@@ -2,6 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors');
 const Inventory = require('./model/inventory.model')
+const Queue = require('./model/queue.model')
+
 const path = require('path')
 const Pusher = require('pusher')
 
@@ -27,6 +29,7 @@ mongoose.connect(uri,{
 })
 
 const inventoryWatch = Inventory.watch()
+const queueWatch = Queue.watch()
 
 const pusher = new Pusher({
     appId: "1219725",
@@ -67,27 +70,61 @@ const io = require('socket.io')(httpServer,{
     },
 })
 
-io.on("connection",socket =>{
-    console.log('server connected')
+async function queueData(carSocketId,socket){
+    return await Queue.countDocuments(function(err,count){
+        if(!err && count !== 0){
+            Queue.findOne().sort({ createdAt: 1 })
+            .exec((err, item) => {
+                if (err) return (err)
+                if(carSocketId !== undefined){
+                    console.log("this")
+                    io.to(carSocketId).emit('sending-search',{'keyword':item.keyword,'userId':item.userId})
+                }
+            })
+        }
+    })
+}
 
-    socket.on('raspberry-send',delta =>{
+io.on("connection",async socket =>{
+    // console.log('server connected '+socket.id)
+
+    const carSocketIdListener = async (delta) =>{
+        carSocketId[socket.id] = delta
+        // console.log('car socket '+carSocketId[socket.id])
+        await queueData(carSocketId[socket.id],socket)
+    }
+    socket.on('car-socket-id',carSocketIdListener)
+
+    const raspberrySendListener = (delta) =>{
         socket.broadcast.emit('receive-raspberry',delta)
-        console.log("this "+delta['velocity'])
+        // console.log("this "+delta['velocity'])
+    }
+    socket.on('raspberry-send',raspberrySendListener)
+
+    queueWatch.on('change',async (change)=>{
+        if(change.operationType === 'insert' || change.operationType === 'delete') {
+            await queueData(carSocketId[socket.id],socket)
+        }
     })
 
-    socket.on('begin-search',delta =>{
-        socket.broadcast.emit('sending-search', delta)
+    socket.on('begin-search',async delta =>{
+        await createQueue(delta).catch(err =>{console.log(err)})
+        socket.broadcast.emit("popup","hello")
+        // console.log("from front-end "+delta['socketId'])
     })
 
-    socket.on('sending-result',async delta =>{
+    const sendingResultListener = async (delta) =>{
         const content = {
             'location':delta['location'],
             'photo':delta['photo'],
             'userId':delta['userId']
         }
+        deleteFirstItem()
         await createInventory(content).catch(err => {console.log(err)})
-        // console.log('server received ',delta['location'])
-    })
+        console.log('server received ',delta['location'])
+    }
+    socket.on('sending-result',sendingResultListener)
+    
 
     // const str = "testing this line"
     // socket.broadcast.emit('sending',str)
@@ -98,19 +135,19 @@ io.on("connection",socket =>{
         //     socket.broadcast.emit('receive-changes',delta)
         // })
 
-        //TODO: user login with passport, query, raspberry pi connect
-
-    socket.on('car-socket-id',(delta)=>{
-        carSocketId[socket.id] = delta
-    })
+        //TODO: raspberry pi connect
+    
 
     socket.on('disconnect',()=>{
         console.log('Disconnected! '+socket.id)
         if (socket.id === carSocketId[socket.id]){
             socket.broadcast.emit('car-offline',false)
-            console.log('true')
+            console.log('car disconnected')
+            socket.off('car-socket-id',carSocketIdListener)
+            socket.off('sending-result',sendingResultListener)
             delete carSocketId[socket.id]
         }
+        
     })
 
     socket.on('error', (err) => {
@@ -121,8 +158,16 @@ io.on("connection",socket =>{
 async function createInventory(content){
     return await Inventory.create(content)
 }
+async function createQueue(content){
+    return await Queue.create(content)
+}
 
-
+async function deleteFirstItem(){
+    return await Queue.deleteOne().sort({ createdAt: 1 })
+        .exec((err, item) => {
+            if (err) return (err)
+        })
+}
 
 inventoryWatch.on('change',async (change)=>{
     if(change.operationType === 'insert') {

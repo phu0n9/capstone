@@ -8,7 +8,7 @@ export default function DroneStatus() {
     const heroku = 'https://schaeffler.herokuapp.com/'
     // 'http://localhost:5000/'
     useEffect(() => {
-        const s = io(heroku)
+        const s = io('http://localhost:5000/')
         setSocket(s)
         return () =>{
             s.disconnect()  
@@ -21,6 +21,7 @@ export default function DroneStatus() {
 
         const handler = (delta) =>{
             setBattery(delta['battery'])
+
         }
         socket.on('receive-raspberry',handler)
         return () =>{

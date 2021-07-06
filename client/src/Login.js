@@ -12,7 +12,7 @@ export default function Login() {
           username:username,
           password:password
         }
-        await axios.post(heroku,content)
+        await axios.post('http://localhost:5000/login',content)
         .then(data =>{
           if(data.data === 'Incorrect password' || data.data === 'Cannot find user'){
             alert(data.data)

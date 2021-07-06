@@ -11,7 +11,7 @@ export default function Status() {
     const heroku = 'https://schaeffler.herokuapp.com/'
     // 'http://localhost:5000/'
     useEffect(() => {
-        const s = io(heroku)
+        const s = io('http://localhost:5000/')
         setSocket(s)
         return () =>{
             s.disconnect()  
@@ -20,14 +20,15 @@ export default function Status() {
 
     useEffect(() =>{
         if(socket == null) return
-
         const handler = (delta) =>{
             setVelocity(delta['velocity'])
             setLocation(delta['current location'])
             setConnection(true)
             setConnectTitle('online')
+
         }
         socket.on('receive-raspberry',handler)
+
         return () =>{
             socket.off('receive-raspberry',handler)
         }

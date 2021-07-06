@@ -11,6 +11,7 @@ export default function SidebarBox({setClickPhoto}) {
     const [enableCalendar,setEnableCalendar] = useState(false)
     const [value, setCalendar] = useState(new Date())
     const [buttonType,setButtonType] = useState(false)
+    const [keydown,setKeyDown] = useState("")
     
     const {
         inventory,
@@ -63,6 +64,15 @@ export default function SidebarBox({setClickPhoto}) {
         }
     },[selection,value,keyword])
 
+    useEffect(() =>{
+        if (keydown !== "" && keyword === ""){
+            setPageNumber(5)
+        }
+    },[keydown,keyword])
+
+    const handleKeyDown = ((e) =>{
+        setKeyDown(e.target.value)
+    })
 
     return ( 
         <div className="grid-item sidebar-wrapper">
@@ -82,6 +92,7 @@ export default function SidebarBox({setClickPhoto}) {
                     onChange={handleItemSearch}
                     value ={keyword}
                     disabled={buttonType ? "disabled": ""}
+                    onKeyDown={handleKeyDown}
                 />}
             <p className="sort-title">Sort by:</p>
             <select name="sort" className="sort-select" onChange={handleSelection} value={selection}>
