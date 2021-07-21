@@ -4,9 +4,9 @@ export default function Setting() {
     return (
         <span className="setting-wrapper">
             <img src="black-bell.png" alt="noti" className="img-wrapper"/>
-            <div class="dropdown">
+            <div className="dropdown">
                 <img src="black-user.png" alt="user" className="img-wrapper"/>
-                <div class="dropdown-content">
+                <div className="dropdown-content">
                     <p>Log out</p>
                 </div>
             </div>

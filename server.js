@@ -1,6 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const cors = require('cors');
+const cors = require('cors')
 const Inventory = require('./model/inventory.model')
 const Queue = require('./model/queue.model')
 
@@ -43,6 +43,7 @@ const channel = 'tasks'
 const loginRouter = require('./routes/userLogin')
 const inventoryRouter = require('./routes/inventoryLoading')
 const sortRouter = require('./routes/sort')
+const popupRouter = require('./routes/popup')
 
 const PORT = process.env.PORT || 5000
 const httpServer = require('http').createServer(app).listen(PORT)
@@ -54,13 +55,15 @@ app.use(express.json())
 app.use('/login',loginRouter)
 app.use('/inventory',inventoryRouter)
 app.use('/sort',sortRouter)
+app.use('/queue',popupRouter)
+
 
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,"client", "build")))
 
     app.get("*", (req, res) => {
         res.sendFile(path.join(__dirname,"client", "build", "index.html"));
-    });
+    })
 }
 
 const io = require('socket.io')(httpServer,{
@@ -70,7 +73,7 @@ const io = require('socket.io')(httpServer,{
     },
 })
 
-async function queueData(carSocketId,socket){
+async function queueData(carSocketId){
     return await Queue.countDocuments(function(err,count){
         if(!err && count !== 0){
             Queue.findOne().sort({ createdAt: 1 })
@@ -87,43 +90,45 @@ async function queueData(carSocketId,socket){
 
 io.on("connection",async socket =>{
     // console.log('server connected '+socket.id)
+    socket.broadcast.emit("popup",true)
 
-    const carSocketIdListener = async (delta) =>{
-        carSocketId[socket.id] = delta
+
+    // const carSocketIdListener = async (delta) =>{
+    //     carSocketId[socket.id] = delta
         // console.log('car socket '+carSocketId[socket.id])
-        await queueData(carSocketId[socket.id],socket)
-    }
-    socket.on('car-socket-id',carSocketIdListener)
+        // await queueData(carSocketId[socket.id])
+    // }
+    // socket.on('car-socket-id',carSocketIdListener)
 
-    const raspberrySendListener = (delta) =>{
-        socket.broadcast.emit('receive-raspberry',delta)
-        // console.log("this "+delta['velocity'])
-    }
-    socket.on('raspberry-send',raspberrySendListener)
-
-    queueWatch.on('change',async (change)=>{
-        if(change.operationType === 'insert' || change.operationType === 'delete') {
-            await queueData(carSocketId[socket.id],socket)
-        }
-    })
+    // const raspberrySendListener = (delta) =>{
+    //     socket.broadcast.emit('receive-raspberry',delta)
+    //     // console.log("this "+delta['velocity'])
+    // }
+    // socket.on('raspberry-send',raspberrySendListener)
 
     socket.on('begin-search',async delta =>{
         await createQueue(delta).catch(err =>{console.log(err)})
-        socket.broadcast.emit("popup","hello")
         // console.log("from front-end "+delta['socketId'])
     })
 
-    const sendingResultListener = async (delta) =>{
-        const content = {
-            'location':delta['location'],
-            'photo':delta['photo'],
-            'userId':delta['userId']
+    queueWatch.on('change',async (change)=>{
+        if(change.operationType === 'insert' ) {
+            // await queueData(carSocketId[socket.id])
+            socket.broadcast.emit("popup",true)
         }
-        deleteFirstItem()
-        await createInventory(content).catch(err => {console.log(err)})
-        console.log('server received ',delta['location'])
-    }
-    socket.on('sending-result',sendingResultListener)
+    })
+
+    // const sendingResultListener = async (delta) =>{
+    //     const content = {
+    //         'location':delta['location'],
+    //         'photo':delta['photo'],
+    //         'userId':delta['userId']
+    //     }
+    //     deleteFirstItem()
+    //     await createInventory(content).catch(err => {console.log(err)})
+    //     console.log('server received ',delta['location'])
+    // }
+    // socket.on('sending-result',sendingResultListener)
     
 
     // const str = "testing this line"
@@ -171,7 +176,7 @@ async function deleteFirstItem(){
 
 inventoryWatch.on('change',async (change)=>{
     if(change.operationType === 'insert') {
-        const task = change.fullDocument
+        // const task = change.fullDocument
         await pusher.trigger(
             channel,
             'inserted', 
@@ -180,4 +185,11 @@ inventoryWatch.on('change',async (change)=>{
             }
         ).catch((error)=>{console.log(error)})
     } 
+})
+
+queueWatch.on('change', async (change) =>{
+    if (change.operationType === 'delete'){
+        await pusher.trigger(channel,'deleted', {})
+        .catch((error)=>{console.log(error)})
+    }
 })

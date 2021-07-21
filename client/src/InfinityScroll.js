@@ -7,6 +7,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
     const [error,setError] = useState(false)
     const [inventory,setInventory] = useState([])
     const [hasMore,setHasMore] = useState(false)       
+    const [change,setChange] = useState(false)
     const heroku = 'https://schaeffler.herokuapp.com/inventory'
 
     function fetchApi(URL,paramsDict){
@@ -37,9 +38,10 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
             fetchApi('http://localhost:5000/inventory',{page:5})
+            setChange(true)
         })
         return () => channel.unbind('inserted')
-    },[keyword])
+    },[])
 
 
     useEffect(() =>{
@@ -75,6 +77,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
                 })
                     setHasMore(res.data.length > 0)
                     setLoading(false)
+                    setChange(false)
             })
             .catch(e =>{
                 setError(true)
@@ -83,5 +86,5 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         }
     },[pageNumber,keyword])
 
-    return {loading,hasMore,error,inventory}
+    return {loading,hasMore,error,inventory,change}
 }
