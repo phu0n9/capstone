@@ -49,7 +49,6 @@ const httpServer = require('http').createServer(app).listen(PORT)
 app.use(cors())
 app.use(express.json())
 
-
 app.use('/login',loginRouter)
 app.use('/inventory',inventoryRouter)
 app.use('/sort',sortRouter)
@@ -72,16 +71,17 @@ const io = require('socket.io')(httpServer,{
 })
 
 io.on("connection",socket =>{
-    socket.broadcast.emit("popup",true)
+    io.emit("popup",true)
 
     socket.on('begin-search',async delta =>{
-        await createQueue(delta)
+        await createQueue(delta).then(()=>{
+            socket.emit('popup',true)
+        })
         .catch(err =>{console.log(err)})
     })
 
     // queueWatch.on('change',async (change)=>{
     //     if(change.operationType === 'insert' ) {
-    //         // await queueData(carSocketId[socket.id])
     //     }
     // })
     
@@ -126,6 +126,10 @@ inventoryWatch.on('change',async (change)=>{
 queueWatch.on('change', async (change) =>{
     if (change.operationType === 'delete'){
         await pusher.trigger(channel,'deleted', {})
+        .catch((error)=>{console.log(error)})
+    }
+    else if(change.operationType === 'insert'){
+        await pusher.trigger(channel,'inserted', {})
         .catch((error)=>{console.log(error)})
     }
 })
