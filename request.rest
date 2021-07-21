@@ -31,4 +31,13 @@ GET http://localhost:5000/sort/sortByUserId?userId=60c063c994a29c1da0924d7d
 
 
 ###
-GET http://localhost:5000/localhost:5000/sort/sortByTime?time=2021-06-27T08:00:24.318+00:00
+GET http://localhost:5000/sort/sortByTime?time=2021-7-9
+
+###
+DELETE http://localhost:5000/queue/delete/60f5403eb554070ba438ba28
+
+###
+GET http://localhost:5000/queue
+
+###
+GET http://localhost:5000/queue

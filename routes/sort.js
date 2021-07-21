@@ -1,6 +1,5 @@
 const router = require('express').Router()
 const Inventory = require('../model/inventory.model')
-const mongoose = require('mongoose')
 
 router.route('/sortByLocation').get(async (req,res) => {
     await Inventory.find({'location':req.query.location}).sort({'createdAt':-1})
@@ -21,10 +20,8 @@ router.route('/sortByUserId').get(async (req,res) => {
 router.route('/sortByTime').get(async (req,res) => {
     await Inventory.find({'createdAt':
         {
-            '$gte' : [
-                { "$dateFromString": { "format": "%m-%d-%Y" }},
-                ISODate(req.query.time)
-              ]
+            '$gte' :new Date(req.query.time),
+            // "$lt": new Date(req.query.time)
         }
     }).sort({'createdAt':-1})
     .exec((err, inventory) => {

@@ -17,7 +17,7 @@ export default function SidebarBox({setClickPhoto}) {
         inventory,
         hasMore,
         error,
-        loading
+        loading,change
     } = infinityScroll(pageNumber,keyword,selection)
     
 
@@ -25,8 +25,7 @@ export default function SidebarBox({setClickPhoto}) {
         if(loading) return
         if(observer.current) observer.current.disconnect()
         observer.current = new IntersectionObserver(entries =>{
-            if(entries[0].isIntersecting && hasMore)
-            setPageNumber(prevInventory => prevInventory + 5)
+            if(entries[0].isIntersecting && hasMore) setPageNumber(prevInventory => prevInventory + 5)
         })
         if(node) observer.current.observe(node)
     },[loading,hasMore])
@@ -39,13 +38,20 @@ export default function SidebarBox({setClickPhoto}) {
         setSelection(e.target.value)
     })
 
+    useEffect(() =>{
+        if (change){
+            setKeyword("")
+        }
+    },[change])
+
     useEffect(()=>{
         
         switch(selection){
             case "date":
                 setEnableCalendar(true)
                 setKeyword(value.getFullYear()+'-' + (value.getMonth()+1) + '-'+value.getDate())
-                setButtonType(true)
+                setButtonType(true) 
+
                 break
             case "userId":
                 setEnableCalendar(false)
@@ -55,7 +61,7 @@ export default function SidebarBox({setClickPhoto}) {
                 }
                 break
             default:
-                if(keyword === localStorage.getItem('userId')) {
+                if(keyword === localStorage.getItem('userId') || keyword === value.getFullYear()+'-' + (value.getMonth()+1) + '-'+value.getDate()) {
                     setKeyword("")
                 }
                 setEnableCalendar(false)
@@ -96,7 +102,7 @@ export default function SidebarBox({setClickPhoto}) {
                 />}
             <p className="sort-title">Sort by:</p>
             <select name="sort" className="sort-select" onChange={handleSelection} value={selection}>
-                <option value="location" selected>Location</option>
+                <option value="location" defaultValue>Location</option>
                 <option value="userId">Create By You</option>
                 <option value="date">Date</option>
             </select>
@@ -105,19 +111,19 @@ export default function SidebarBox({setClickPhoto}) {
                 if(inventory.length === index +1){
                     return <div className="inventory-item">
                         <div key={item.location} ref={lastInventory}>Location: {item.location}</div>
-                        <div>Create At: {item.createdAt}</div>
+                        <div>Create At: {item.createdAt.substring(0,10)}</div>
                         <img key={item.photo} ref={lastInventory} src={item.photo} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
                     </div>
                 }
                 else{
                     return <div className="inventory-item">
                         <div key={item.location}>Location: {item.location}</div>
-                        <div>Create At: {item.createdAt}</div>
+                        <div>Create At: {item.createdAt.substring(0,10)}</div>
                         <img key={item.photo} src={item.photo} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
                     </div>
                 }
             })}
-            <div>{loading && 'Loading...'}</div>
+        <div>{loading && 'Loading...'}</div>
             <div>{error && 'Error'}</div>
         </div>
     )

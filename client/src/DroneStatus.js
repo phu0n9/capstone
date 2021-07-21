@@ -1,6 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import {io} from 'socket.io-client'
 import Battery from './Components/Battery'
+import Pusher from 'pusher-js'
+
 
 export default function DroneStatus() {
     const [socket,setSocket] = useState()
@@ -16,26 +18,42 @@ export default function DroneStatus() {
     }, [])  
 
 
+    // useEffect(() =>{
+    //     if(socket == null) return
+
+    //     const handler = (delta) =>{
+    //         setBattery(delta['battery'])
+
+    //     }
+    //     socket.on('receive-raspberry',handler)
+    //     return () =>{
+    //         socket.off('receive-raspberry',handler)
+    //     }
+    // },[socket,battery])
+
     useEffect(() =>{
-        if(socket == null) return
+        const pusher = new Pusher('2ccb32686bdc0f96f50a',{
+            'cluster':'ap1',
+            encrypted:true
+        })
 
-        const handler = (delta) =>{
-            setBattery(delta['battery'])
+        const messageChannel  = pusher.subscribe('droneMessage')
+        messageChannel.bind('send',function(data){
+            setBattery(data.battery)
+        })
 
-        }
-        socket.on('receive-raspberry',handler)
-        return () =>{
-            socket.off('receive-raspberry',handler)
-        }
-    },[socket,battery])
-
+        messageChannel.bind('connection',(status)=>{
+            if(!status) setBattery(0)
+        })
+        return () => messageChannel.unbind()
+    },[])
 
     return (
         <div className="droneStatus-wrapper">
             <Battery value={battery}/>
             <div className="img-container" style={{marginTop:"30px"}}>
                 <img src="drone.png" alt="drone-img" className="img-oval"/>
-                <div class="offline-dot"/>
+                <div className="offline-dot"/>
             </div>
             <p>Drone is offline</p>
         </div>

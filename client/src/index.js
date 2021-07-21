@@ -11,6 +11,7 @@ import './stylesheet/carStatus.css'
 import './stylesheet/droneStatus.css'
 import './stylesheet/setting.css'
 import './stylesheet/darkMode.css'
+import './stylesheet/pop-up.css'
 
 import App from './App';
 
