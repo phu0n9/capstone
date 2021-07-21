@@ -25,14 +25,8 @@ export default function PopUp() {
     }
     useEffect(() => getQueue(),[])
 
-    useEffect(() =>{
-        const pusher = new Pusher('2ccb32686bdc0f96f50a',{
-            'cluster':'ap1',
-            encrypted:true
-        })
-        const channel = pusher.subscribe('tasks')
-        channel.bind('deleted',function(){
-            setError(false)
+    function fetchChanges(){
+        setError(false)
             axios({
                 method:'GET',
                 url: 'http://localhost:5000/queue',
@@ -46,8 +40,21 @@ export default function PopUp() {
                 setError(true)
                 console.log('Error: '+e)
             })
+    }
+
+    useEffect(() =>{
+        const pusher = new Pusher('2ccb32686bdc0f96f50a',{
+            'cluster':'ap1',
+            encrypted:true
         })
-        return () => channel.unbind('deleted')
+        const channel = pusher.subscribe('tasks')
+        channel.bind('deleted',function(){
+            fetchChanges()
+        })
+        channel.bind('inserted',function(){
+            fetchChanges()
+        })
+        return () => channel.unbind()
     },[])
 
     return {queue,error}

@@ -3,14 +3,14 @@ import React from 'react'
 export default function Setting() {
     return (
         <span className="setting-wrapper">
-            <img src="black-bell.png" alt="noti" className="img-wrapper"/>
+            <img src="upload.png" alt="noti" className="img-wrapper"/>
             <div className="dropdown">
-                <img src="black-user.png" alt="user" className="img-wrapper"/>
+                <img src="user.png" alt="user" className="img-wrapper"/>
                 <div className="dropdown-content">
                     <p>Log out</p>
                 </div>
             </div>
-            <img src="black-settings.png" alt="setting" className="img-wrapper"/>
+            <img src="setting.png" alt="setting" className="img-wrapper"/>
         </span>
     )
 }

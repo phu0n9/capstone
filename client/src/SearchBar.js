@@ -70,6 +70,7 @@ export default function SearchBar({userId}) {
         if(socket == null) return
         const handler = (delta) =>{
             setEnablePopUp(delta)
+            setCancelBtn(false)
         }
         socket.on('popup',handler)
 
@@ -80,6 +81,7 @@ export default function SearchBar({userId}) {
 
     const handleCancelButton = (()=>{
         setCancelBtn(true)
+        setEnablePopUp(false)
     })
 
     const handleExecuteItem = ((e)=>{
