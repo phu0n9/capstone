@@ -17,8 +17,6 @@ connection.once('open',() => {
     console.log("MongoDB database connection established successfully")
 })
 
-const carSocketId = {}
-
 connection.on('error', console.error.bind(console, 'Connection Error:'))
 
 mongoose.connect(uri,{
@@ -73,86 +71,23 @@ const io = require('socket.io')(httpServer,{
     },
 })
 
-async function queueData(carSocketId){
-    return await Queue.countDocuments(function(err,count){
-        if(!err && count !== 0){
-            Queue.findOne().sort({ createdAt: 1 })
-            .exec((err, item) => {
-                if (err) return (err)
-                if(carSocketId !== undefined){
-                    console.log("this")
-                    io.to(carSocketId).emit('sending-search',{'keyword':item.keyword,'userId':item.userId})
-                }
-            })
-        }
-    })
-}
-
-io.on("connection",async socket =>{
-    // console.log('server connected '+socket.id)
+io.on("connection",socket =>{
     socket.broadcast.emit("popup",true)
 
-
-    // const carSocketIdListener = async (delta) =>{
-    //     carSocketId[socket.id] = delta
-        // console.log('car socket '+carSocketId[socket.id])
-        // await queueData(carSocketId[socket.id])
-    // }
-    // socket.on('car-socket-id',carSocketIdListener)
-
-    // const raspberrySendListener = (delta) =>{
-    //     socket.broadcast.emit('receive-raspberry',delta)
-    //     // console.log("this "+delta['velocity'])
-    // }
-    // socket.on('raspberry-send',raspberrySendListener)
-
     socket.on('begin-search',async delta =>{
-        await createQueue(delta).catch(err =>{console.log(err)})
-        // console.log("from front-end "+delta['socketId'])
+        await createQueue(delta)
+        .catch(err =>{console.log(err)})
     })
 
-    queueWatch.on('change',async (change)=>{
-        if(change.operationType === 'insert' ) {
-            // await queueData(carSocketId[socket.id])
-            socket.broadcast.emit("popup",true)
-        }
-    })
-
-    // const sendingResultListener = async (delta) =>{
-    //     const content = {
-    //         'location':delta['location'],
-    //         'photo':delta['photo'],
-    //         'userId':delta['userId']
+    // queueWatch.on('change',async (change)=>{
+    //     if(change.operationType === 'insert' ) {
+    //         // await queueData(carSocketId[socket.id])
     //     }
-    //     deleteFirstItem()
-    //     await createInventory(content).catch(err => {console.log(err)})
-    //     console.log('server received ',delta['location'])
-    // }
-    // socket.on('sending-result',sendingResultListener)
-    
-
-    // const str = "testing this line"
-    // socket.broadcast.emit('sending',str)
-
-    // socket.on('get-user', async userId =>{
-        // socket.on('send-changes',delta =>{
-        //     // console.log("you see this ",delta)
-        //     socket.broadcast.emit('receive-changes',delta)
-        // })
-
-        //TODO: raspberry pi connect
+    // })
     
 
     socket.on('disconnect',()=>{
         console.log('Disconnected! '+socket.id)
-        if (socket.id === carSocketId[socket.id]){
-            socket.broadcast.emit('car-offline',false)
-            console.log('car disconnected')
-            socket.off('car-socket-id',carSocketIdListener)
-            socket.off('sending-result',sendingResultListener)
-            delete carSocketId[socket.id]
-        }
-        
     })
 
     socket.on('error', (err) => {
@@ -163,6 +98,7 @@ io.on("connection",async socket =>{
 async function createInventory(content){
     return await Inventory.create(content)
 }
+
 async function createQueue(content){
     return await Queue.create(content)
 }
