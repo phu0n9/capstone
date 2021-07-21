@@ -1,35 +1,14 @@
 import React,{useState,useEffect} from 'react'
-import {io} from 'socket.io-client'
 import Battery from './Components/Battery'
 import Pusher from 'pusher-js'
 
 
 export default function DroneStatus() {
-    const [socket,setSocket] = useState()
     const [battery,setBattery] = useState(0)
-    const heroku = 'https://schaeffler.herokuapp.com/'
-    // 'http://localhost:5000/'
-    useEffect(() => {
-        const s = io('http://localhost:5000/')
-        setSocket(s)
-        return () =>{
-            s.disconnect()  
-        }
-    }, [])  
-
-
-    // useEffect(() =>{
-    //     if(socket == null) return
-
-    //     const handler = (delta) =>{
-    //         setBattery(delta['battery'])
-
-    //     }
-    //     socket.on('receive-raspberry',handler)
-    //     return () =>{
-    //         socket.off('receive-raspberry',handler)
-    //     }
-    // },[socket,battery])
+    const [altitude,setAltitude] = useState("")
+    const [connectTitle,setConnectTitle] = useState('offline')
+    const [connection,setConnection] = useState(false)
+    const [location,setLocation] = useState("")
 
     useEffect(() =>{
         const pusher = new Pusher('2ccb32686bdc0f96f50a',{
@@ -40,10 +19,10 @@ export default function DroneStatus() {
         const messageChannel  = pusher.subscribe('droneMessage')
         messageChannel.bind('send',function(data){
             setBattery(data.battery)
-        })
-
-        messageChannel.bind('connection',(status)=>{
-            if(!status) setBattery(0)
+            setAltitude(data.altitude)
+            setConnection(true)
+            setConnectTitle('online')
+            setLocation(data.location)
         })
         return () => messageChannel.unbind()
     },[])
@@ -53,9 +32,17 @@ export default function DroneStatus() {
             <Battery value={battery}/>
             <div className="img-container" style={{marginTop:"30px"}}>
                 <img src="drone.png" alt="drone-img" className="img-oval"/>
-                <div className="offline-dot"/>
+                <div className={connection ? "offline-dot online-dot": "offline-dot"}/>
             </div>
-            <p>Drone is offline</p>
+            <p>Drone is {connectTitle}</p>
+            <p>
+                <img src="altitude.png" alt="altitude" className="icon-wrapper" />
+                Altitude: {altitude}
+            </p>
+            <p>
+            <img src="location.png" alt="location" className="icon-wrapper"/>
+                Current Location: {location}
+            </p>
         </div>
     )
 }

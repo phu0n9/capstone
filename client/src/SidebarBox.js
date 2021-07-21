@@ -12,6 +12,7 @@ export default function SidebarBox({setClickPhoto}) {
     const [value, setCalendar] = useState(new Date())
     const [buttonType,setButtonType] = useState(false)
     const [keydown,setKeyDown] = useState("")
+    const [state,setState] = useState(false)
     
     const {
         inventory,
@@ -51,7 +52,7 @@ export default function SidebarBox({setClickPhoto}) {
                 setEnableCalendar(true)
                 setKeyword(value.getFullYear()+'-' + (value.getMonth()+1) + '-'+value.getDate())
                 setButtonType(true) 
-
+                setState(false)
                 break
             case "userId":
                 setEnableCalendar(false)
@@ -59,6 +60,7 @@ export default function SidebarBox({setClickPhoto}) {
                 if (keyword !== undefined) {
                     setKeyword(localStorage.getItem('userId'))
                 }
+                setState(false)
                 break
             default:
                 if(keyword === localStorage.getItem('userId') || keyword === value.getFullYear()+'-' + (value.getMonth()+1) + '-'+value.getDate()) {
@@ -66,6 +68,7 @@ export default function SidebarBox({setClickPhoto}) {
                 }
                 setEnableCalendar(false)
                 setButtonType(false)
+                setState(true)
                 break
         }
     },[selection,value,keyword])
@@ -109,21 +112,21 @@ export default function SidebarBox({setClickPhoto}) {
             </div>
             {inventory.map((item,index)=>{
                 if(inventory.length === index +1){
-                    return <div className="inventory-item">
-                        <div key={item.location} ref={lastInventory}>Location: {item.location}</div>
-                        <div>Create At: {item.createdAt.substring(0,10)}</div>
+                    return <div className="inventory-item" key={index.toString()}>
+                        <div key={(index+1).toString()} ref={lastInventory}>Location: {item.location}</div>
+                        <div key={(index+2).toString()}>Create At: {item.createdAt.substring(0,10)}</div>
                         <img key={item.photo} ref={lastInventory} src={item.photo} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
                     </div>
                 }
                 else{
-                    return <div className="inventory-item">
-                        <div key={item.location}>Location: {item.location}</div>
-                        <div>Create At: {item.createdAt.substring(0,10)}</div>
+                    return <div className="inventory-item" key={index.toString()}>
+                        <div key={(index+1).toString()}>Location: {item.location}</div>
+                        <div key={(index+2).toString()}>Create At: {item.createdAt.substring(0,10)}</div>
                         <img key={item.photo} src={item.photo} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
                     </div>
                 }
             })}
-        <div>{loading && 'Loading...'}</div>
+            {state ? <div>{loading && 'Loading...'}</div> : ""}
             <div>{error && 'Error'}</div>
         </div>
     )

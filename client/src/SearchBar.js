@@ -1,4 +1,4 @@
-import React,{useEffect,useState,useCallback,useRef} from 'react'
+import React,{useEffect,useState} from 'react'
 import {io} from 'socket.io-client'
 import popUp from './PopUp'
 import axios from 'axios'
@@ -8,27 +8,17 @@ export default function SearchBar({userId}) {
   
     const [socket,setSocket] = useState()
     const [pressed,setPress] = useState(false)
-    const [keyword,setKeyword] = useState()
+    const [keyword,setKeyword] = useState("")
     const [buttonClicked,setButtonClicked] = useState(false)
     const [enablePopUp,setEnablePopUp] = useState(false)
     const [cancelBtn,setCancelBtn] = useState(false)
-    const observer = useRef()
 
-     // const [clicked,setClicked] = useState(false)
     const heroku = 'https://schaeffler.herokuapp.com/'
     const {
         queue,
         error,
     } = popUp()
 
-    const lastItem= useCallback((node) =>{
-        if(observer.current) observer.current.disconnect()
-        observer.current = new IntersectionObserver(entries =>{
-            if(entries[0].isIntersecting) 
-            console.log("here")
-        })
-        if(node) observer.current.observe(node)
-    },[])
 
     // 'http://localhost:5000/'
     useEffect(() => {
@@ -48,7 +38,6 @@ export default function SearchBar({userId}) {
 
     const onSearchClickButton = () =>
     {
-        // setClicked(true)
         setButtonClicked(true)
     }
 
@@ -57,7 +46,7 @@ export default function SearchBar({userId}) {
     }
 
     useEffect(() =>{
-        if (socket === null || keyword === null) return
+        if (socket === null) return
 
         if((pressed === true ) || (buttonClicked === true)){
             if (keyword !== ""){
@@ -126,20 +115,20 @@ export default function SearchBar({userId}) {
 
                 <div className="queue-container">
                     {queue.map((item,index)=>{
-                        if(item.length === index +1){
-                            return <div className="queue-item">
-                                <span key={item.keyword} ref={lastItem} >Search location: {item.keyword}</span>
-                                <button type="button" className="cancel-item-btn" onClick={handleCancelItem} value={item._id} ref={lastItem}>cancel</button>
-                                <button type="button" className="execute-item-btn" onClick={handleExecuteItem} value={item._id} ref={lastItem}>execute</button>
+                        // if(item.length === index +1){
+                        //     return <div className="queue-item">
+                        //         <span key={item.keyword} ref={lastItem} >Search location: {item.keyword}</span>
+                        //         <button type="button" className="cancel-item-btn" onClick={handleCancelItem} value={item._id} ref={lastItem}>cancel</button>
+                        //         <button type="button" className="execute-item-btn" onClick={handleExecuteItem} value={item._id} ref={lastItem}>execute</button>
+                        //     </div>
+                        // }
+                        // else{
+                            return <div className="queue-item" key={(index).toString()}>
+                                <span key={(index+1).toString()}>Search location: {item.keyword}</span>
+                                <button key={(index+2).toString()} type="button" className="cancel-item-btn" onClick={handleCancelItem} value={item._id}>cancel</button>
+                                <button key={(index+3).toString()} type="button" className="execute-item-btn" onClick={handleExecuteItem} value={item._id}>execute</button>
                             </div>
-                        }
-                        else{
-                            return <div className="queue-item">
-                                <span key={item.keyword}>Search location: {item.keyword}</span>
-                                <button type="button" className="cancel-item-btn" onClick={handleCancelItem} value={item._id}>cancel</button>
-                                <button type="button" className="execute-item-btn" onClick={handleExecuteItem} value={item._id}>execute</button>
-                            </div>
-                        }
+                        // }
                     })}
                     <div>{error && 'Error'}</div>
                 </div>
