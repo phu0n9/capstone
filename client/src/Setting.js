@@ -10,7 +10,7 @@ export default function Setting() {
                     <p>Log out</p>
                 </div>
             </div>
-            <img src="setting.png" alt="setting" className="img-wrapper"/>
+            <img src="queue.png" alt="queue" className="img-wrapper"/>
         </span>
     )
 }
