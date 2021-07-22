@@ -87,6 +87,7 @@ export default function SearchBar({userId}) {
     const handleExecuteItem = ((e)=>{
         const url = `http://localhost:5000/queue/execute/${e.target.value}`
         axios.get(url)
+        // .then(socket.emit('execute',))
         .catch(error=> {console.log(error)})    
     })
 

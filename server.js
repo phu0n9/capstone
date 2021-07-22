@@ -71,7 +71,7 @@ const io = require('socket.io')(httpServer,{
 })
 
 io.on("connection",socket =>{
-    io.emit("popup",true)
+    socket.emit("popup",true)
 
     socket.on('begin-search',async delta =>{
         await createQueue(delta).then(()=>{
@@ -79,12 +79,6 @@ io.on("connection",socket =>{
         })
         .catch(err =>{console.log(err)})
     })
-
-    // queueWatch.on('change',async (change)=>{
-    //     if(change.operationType === 'insert' ) {
-    //     }
-    // })
-    
 
     socket.on('disconnect',()=>{
         console.log('Disconnected! '+socket.id)
@@ -95,20 +89,20 @@ io.on("connection",socket =>{
     })
 })
 
-async function createInventory(content){
-    return await Inventory.create(content)
-}
+// async function createInventory(content){
+//     return await Inventory.create(content)
+// }
 
 async function createQueue(content){
     return await Queue.create(content)
 }
 
-async function deleteFirstItem(){
-    return await Queue.deleteOne().sort({ createdAt: 1 })
-        .exec((err, item) => {
-            if (err) return (err)
-        })
-}
+// async function deleteFirstItem(){
+//     return await Queue.deleteOne().sort({ createdAt: 1 })
+//         .exec((err, item) => {
+//             if (err) return (err)
+//         })
+// }
 
 inventoryWatch.on('change',async (change)=>{
     if(change.operationType === 'insert') {
