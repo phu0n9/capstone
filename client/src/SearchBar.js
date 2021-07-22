@@ -22,7 +22,7 @@ export default function SearchBar({userId}) {
 
     // 'http://localhost:5000/'
     useEffect(() => {
-        const s = io('http://localhost:5000/')
+        const s = io(heroku)
         setSocket(s)
         return () =>{
             s.disconnect()  
@@ -85,14 +85,14 @@ export default function SearchBar({userId}) {
     })
 
     const handleExecuteItem = ((e)=>{
-        const url = `http://localhost:5000/queue/execute/${e.target.value}`
+        const url = heroku+`queue/execute/${e.target.value}`
         axios.get(url)
         // .then(socket.emit('execute',))
         .catch(error=> {console.log(error)})    
     })
 
     const handleCancelItem = ((e)=>{
-        const url = `http://localhost:5000/queue/delete/${e.target.value}`
+        const url = heroku+`queue/delete/${e.target.value}`
         axios.delete(url)
         .catch(error=> {console.log(error)})    
     })
