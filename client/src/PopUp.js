@@ -6,12 +6,13 @@ export default function PopUp() {
 
     const [queue,setQueue] = useState([])
     const [error,setError] = useState(false)
-
+    const heroku = 'https://schaeffler.herokuapp.com/queue'
+    // 'http://localhost:5000/queue'
     function getQueue(){
         setError(false)
         axios({
             method:'GET',
-            url: 'http://localhost:5000/queue',
+            url: heroku,
         })
         .then(res => {
             setQueue(prevInventory =>{
@@ -29,7 +30,7 @@ export default function PopUp() {
         setError(false)
             axios({
                 method:'GET',
-                url: 'http://localhost:5000/queue',
+                url: heroku,
             })
             .then(res => {
                 setQueue(() =>{

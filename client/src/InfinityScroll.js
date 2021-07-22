@@ -8,7 +8,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
     const [inventory,setInventory] = useState([])
     const [hasMore,setHasMore] = useState(false)       
     const [change,setChange] = useState(false)
-    const heroku = 'https://schaeffler.herokuapp.com/inventory'
+    const heroku = 'https://schaeffler.herokuapp.com/'
 
     function fetchApi(URL,paramsDict){
         axios({
@@ -37,7 +37,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            fetchApi('http://localhost:5000/inventory',{page:5})
+            fetchApi(heroku+'inventory',{page:5})
             setChange(true)
         })
         return () => channel.unbind('inserted')
@@ -48,13 +48,13 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         if(keyword !== undefined){
             switch(selection){
                 case "location":
-                    fetchApi('http://localhost:5000/sort/sortByLocation',{location:keyword})
+                    fetchApi(heroku+'sort/sortByLocation',{location:keyword})
                     break
                 case "userId":
-                    fetchApi('http://localhost:5000/sort/sortByUserId',{userId:keyword})
+                    fetchApi(heroku+'sort/sortByUserId',{userId:keyword})
                     break
                 case "date":
-                    fetchApi('http://localhost:5000/sort/sortByTime',{time:keyword})
+                    fetchApi(heroku+'sort/sortByTime',{time:keyword})
                     break
                 default:
                     break
@@ -68,7 +68,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         if(keyword === ''){
             axios({
                 method:'GET',
-                url: 'http://localhost:5000/inventory',
+                url: heroku+'inventory',
                 params:{page:pageNumber}
             })
             .then(res => {
