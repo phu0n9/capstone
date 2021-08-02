@@ -37,6 +37,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
+            console.log("updated")
             fetchApi(heroku+'inventory',{page:5})
             setChange(true)
         })
