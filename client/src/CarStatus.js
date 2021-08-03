@@ -10,7 +10,11 @@ export default function Status() {
     const [connectTitle,setConnectTitle] = useState('offline')
 
     useEffect(() =>{
-        const pusher = process.env.PUSHER
+        const pusher = new Pusher(process.env.PUSHER_KEY,{
+            'cluster':process.env.PUSHER_CLUSTER,
+            encrypted:true
+        })
+
         const messageChannel  = pusher.subscribe('carMessage')
         messageChannel.bind('send',function(data){
             setVelocity(data.velocity)

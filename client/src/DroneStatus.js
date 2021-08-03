@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import Battery from './Components/Battery'
 import Pusher from 'pusher-js'
-
+require('dotenv').config()
 
 export default function DroneStatus() {
     const [battery,setBattery] = useState(0)
@@ -11,8 +11,8 @@ export default function DroneStatus() {
     const [location,setLocation] = useState("")
 
     useEffect(() =>{
-        const pusher = new Pusher('2ccb32686bdc0f96f50a',{
-            'cluster':'ap1',
+        const pusher = new Pusher(process.env.PUSHER_KEY,{
+            'cluster':process.env.PUSHER_CLUSTER,
             encrypted:true
         })
 
