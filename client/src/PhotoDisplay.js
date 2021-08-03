@@ -6,7 +6,7 @@ export default function PhotoDisplay({clickPhoto,setOnClick,onClick}) {
     })
     return (
         <div className="photo-display-wrapper" onClick={photoDisplayOnClick} style={onClick ? {height: 455}: {height: 300}}>
-            <img src={clickPhoto} alt="" className={onClick ? "photo-display":"minimized-photo-display"}/>
+            <img src={`data:image/png;base64,${clickPhoto}`} alt="" className={onClick ? "photo-display":"minimized-photo-display"}/>
         </div>
     )
 }
