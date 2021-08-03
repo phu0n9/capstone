@@ -36,7 +36,6 @@ router.route('/delete/:id').delete(async (req, res) => {
 
 router.route('/execute/:id').get((req, res) => {
     pusher.trigger('search','keyword',req.params.id)
-    .catch((error)=>{console.log(error)})
 })
 
 module.exports = router
