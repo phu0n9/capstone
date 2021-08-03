@@ -36,6 +36,7 @@ router.route('/delete/:id').delete(async (req, res) => {
 
 router.route('/execute/:id').get(async (req, res) => {
     await pusher.trigger('search','keyword',req.params.id)
+    .then(() => res.status(200).send("sent request"))
     .catch((error)=>{console.log(error)})
 })
 
