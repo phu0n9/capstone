@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react'
 import ReactSpeedometer from "react-d3-speedometer"
 import Pusher from 'pusher-js'
+require('dotenv').config()
 
 export default function Status() {
     const [velocity,setVelocity] = useState(0)
@@ -9,11 +10,7 @@ export default function Status() {
     const [connectTitle,setConnectTitle] = useState('offline')
 
     useEffect(() =>{
-        const pusher = new Pusher('2ccb32686bdc0f96f50a',{
-            'cluster':'ap1',
-            encrypted:true
-        })
-
+        const pusher = process.env.PUSHER
         const messageChannel  = pusher.subscribe('carMessage')
         messageChannel.bind('send',function(data){
             setVelocity(data.velocity)
