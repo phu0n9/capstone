@@ -1,6 +1,7 @@
 import {useEffect,useState} from 'react'
 import axios from 'axios'
 import Pusher from 'pusher-js'
+require('dotenv').config()
 
 export default function InfinityScroll(pageNumber,keyword,selection) {
     const [loading,setLoading] = useState(true)
@@ -31,10 +32,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
     
     // 'http://localhost:5000/inventory'
     useEffect(() =>{
-        const pusher = new Pusher('2ccb32686bdc0f96f50a',{
-            'cluster':'ap1',
-            encrypted:true
-        })
+        const pusher = process.env.PUSH
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
             console.log("updated")

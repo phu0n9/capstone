@@ -1,14 +1,9 @@
 const router = require('express').Router()
 const Queue = require('../model/queue.model')
 const Pusher = require('pusher')
+require('dotenv').config()
 
-const pusher = new Pusher({
-    appId: "1219725",
-    key: "2ccb32686bdc0f96f50a",
-    secret: "84a8c245f48597b3e0bb",
-    cluster: "ap1",
-    useTLS: true
-})
+const pusher = process.env.PUSHER
 
 router.route('').get(async (req,res) => {
     await Queue.countDocuments(function(err,count){
@@ -32,7 +27,6 @@ router.route('/delete/:id').delete(async (req, res) => {
         return res.status(200).send(response)
     })
 })
-
 
 router.route('/execute/:id').get(async (req, res) => {
     await pusher.trigger('search','keyword',req.params.id)
