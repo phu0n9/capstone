@@ -115,14 +115,14 @@ export default function SidebarBox({setClickPhoto}) {
                     return <div className="inventory-item" key={index.toString()}>
                         <div key={(index+1).toString()} ref={lastInventory}>Location: {item.location}</div>
                         <div key={(index+2).toString()}>Create At: {item.createdAt.substring(0,10)}</div>
-                        <img key={item.photo} ref={lastInventory} src={item.photo} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
+                        <img key={item.photo} ref={lastInventory} src={`data:image/png;base64,${item.photo}`} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
                     </div>
                 }
                 else{
                     return <div className="inventory-item" key={index.toString()}>
                         <div key={(index+1).toString()}>Location: {item.location}</div>
                         <div key={(index+2).toString()}>Create At: {item.createdAt.substring(0,10)}</div>
-                        <img key={item.photo} src={item.photo} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
+                        <img key={item.photo} src={`data:image/png;base64,${item.photo}`} alt="sideBarPhoto" onClick={() => setClickPhoto(item.photo)} className="img-sideBar"/>
                     </div>
                 }
             })}
