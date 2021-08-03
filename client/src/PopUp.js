@@ -1,6 +1,7 @@
 import {useState,useEffect} from 'react'
 import axios from 'axios'
 import Pusher from 'pusher-js'
+require('dotenv').config()
 
 export default function PopUp() {
 
@@ -44,8 +45,8 @@ export default function PopUp() {
     }
 
     useEffect(() =>{
-        const pusher = new Pusher('2ccb32686bdc0f96f50a',{
-            'cluster':'ap1',
+        const pusher = new Pusher(process.env.PUSHER_KEY,{
+            'cluster':process.env.PUSHER_CLUSTER,
             encrypted:true
         })
         const channel = pusher.subscribe('tasks')

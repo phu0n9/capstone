@@ -30,10 +30,10 @@ const inventoryWatch = Inventory.watch()
 const queueWatch = Queue.watch()
 
 const pusher = new Pusher({
-    appId: "1219725",
-    key: "2ccb32686bdc0f96f50a",
-    secret: "84a8c245f48597b3e0bb",
-    cluster: "ap1",
+    appId: process.env.PUSHER_APP_ID,
+    key: process.env.PUSHER_KEY,
+    secret: process.env.PUSHER_SECRET,
+    cluster: process.env.PUSHER_CLUSTER,
     useTLS: true
 })
 const channel = 'tasks'

@@ -32,7 +32,10 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
     
     // 'http://localhost:5000/inventory'
     useEffect(() =>{
-        const pusher = process.env.PUSH
+        const pusher = new Pusher(process.env.PUSHER_KEY,{
+            'cluster':process.env.PUSHER_CLUSTER,
+            encrypted:true
+        })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
             console.log("updated")
