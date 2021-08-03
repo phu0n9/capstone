@@ -85,14 +85,14 @@ export default function SearchBar({userId}) {
     })
 
     const handleExecuteItem = ((e)=>{
-        const url = heroku+`queue/execute/:${e.target.value}`
+        const url = heroku+`queue/execute/${e.target.value}`
         axios.get(url)
         // .then(socket.emit('execute',))
         .catch(error=> {console.log(error)})    
     })
 
     const handleCancelItem = ((e)=>{
-        const url = heroku+`queue/delete/:${e.target.value}`
+        const url = heroku+`queue/delete/${e.target.value}`
         axios.delete(url)
         .catch(error=> {console.log(error)})    
     })
