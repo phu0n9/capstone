@@ -11,8 +11,8 @@ export default function DroneStatus() {
     const [location,setLocation] = useState("")
 
     useEffect(() =>{
-        const pusher = new Pusher(process.env.PUSHER_KEY,{
-            'cluster':process.env.PUSHER_CLUSTER,
+        const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY,{
+            'cluster':process.env.REACT_APP_PUSHER_CLUSTER,
             encrypted:true
         })
 

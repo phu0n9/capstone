@@ -32,14 +32,14 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
     
     // 'http://localhost:5000/inventory'
     useEffect(() =>{
-        const pusher = new Pusher(process.env.PUSHER_KEY,{
-            'cluster':process.env.PUSHER_CLUSTER,
+        const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY,{
+            'cluster':process.env.REACT_APP_PUSHER_CLUSTER,
             encrypted:true
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
             console.log("updated")
-            fetchApi(heroku+'inventory',{page:5})
+            fetchApi('http://localhost:5000/inventory',{page:5})
             setChange(true)
         })
         return () => channel.unbind('inserted')
@@ -50,13 +50,13 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         if(keyword !== undefined){
             switch(selection){
                 case "location":
-                    fetchApi(heroku+'sort/sortByLocation',{location:keyword})
+                    fetchApi('http://localhost:5000/sort/sortByLocation',{location:keyword})
                     break
                 case "userId":
-                    fetchApi(heroku+'sort/sortByUserId',{userId:keyword})
+                    fetchApi('http://localhost:5000/sort/sortByUserId',{userId:keyword})
                     break
                 case "date":
-                    fetchApi(heroku+'sort/sortByTime',{time:keyword})
+                    fetchApi('http://localhost:5000/sort/sortByTime',{time:keyword})
                     break
                 default:
                     break
@@ -70,7 +70,7 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         if(keyword === ''){
             axios({
                 method:'GET',
-                url: heroku+'inventory',
+                url: 'http://localhost:5000/inventory',
                 params:{page:pageNumber}
             })
             .then(res => {
