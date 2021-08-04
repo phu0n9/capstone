@@ -13,7 +13,7 @@ export default function PopUp() {
         setError(false)
         axios({
             method:'GET',
-            url: heroku,
+            url: 'http://localhost:5000/queue',
         })
         .then(res => {
             setQueue(prevInventory =>{
@@ -45,8 +45,8 @@ export default function PopUp() {
     }
 
     useEffect(() =>{
-        const pusher = new Pusher(process.env.PUSHER_KEY,{
-            'cluster':process.env.PUSHER_CLUSTER,
+        const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY,{
+            'cluster':process.env.REACT_APP_PUSHER_CLUSTER,
             encrypted:true
         })
         const channel = pusher.subscribe('tasks')
