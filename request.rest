@@ -1,0 +1,43 @@
+GET http://localhost:5000/login/username
+
+
+###
+POST http://localhost:5000/login/username
+Content-Type: application/json
+
+{
+    "username": "hi",
+    "password":"hiagain123"
+}
+
+###
+POST http://localhost:5000/login 
+Content-Type: application/json
+
+{
+    "username": "hi",
+    "password":"hiagain123"
+}
+
+###
+GET http://localhost:5000/inventory?page=5
+
+
+###
+GET http://localhost:5000/sort/sortByLocation?location=1.1.13
+
+###
+GET http://localhost:5000/sort/sortByUserId?userId=60c063c994a29c1da0924d7d
+
+
+###
+GET http://localhost:5000/sort/sortByTime?time=2021-7-9
+
+###
+DELETE http://localhost:5000/queue/delete/60f5403eb554070ba438ba28
+
+###
+GET http://localhost:5000/queue
+
+###
+GET https://schaeffler.herokuapp.com/queue/execute/610122019a2cb200227e7db9
