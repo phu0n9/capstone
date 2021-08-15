@@ -13,38 +13,38 @@ const User = require('../model/user.model')
 // })
 
 
-router.route('/').post(async (req, res) => {
-    const checkUser = await User.findOne({username:req.body.username})
-    if(checkUser == null){
-        return res.status(400).send('Cannot find user')
-    }
-    try {
-        await User.findOne({ username: req.body.username }, function(err, user) {
-            if (err) console.log(err)
-            try{
-                // test a matching password
-                user.comparePassword(req.body.password, function(err, isMatch) {
-                    if (err) console.log(err)
-                    if(isMatch){
-                        res.send(user._id)
-                    }
-                    else {
-                        res.send('Incorrect password')
-                      }
-                })
-            }
-            catch(e){
-                if(e instanceof TypeError){
-                    res.status(400).send('Cannot find user')
-                }else{
-                    res.status(500).send()
-                }
-            }
-        })
-    } catch {
-      res.status(500).send()
-    }
-  })
+// router.route('/').post(async (req, res) => {
+//     const checkUser = await User.findOne({username:req.body.username})
+//     if(checkUser == null){
+//         return res.status(400).send('Cannot find user')
+//     }
+//     try {
+//         await User.findOne({ username: req.body.username }, function(err, user) {
+//             if (err) console.log(err)
+//             try{
+//                 // test a matching password
+//                 user.comparePassword(req.body.password, function(err, isMatch) {
+//                     if (err) console.log(err)
+//                     if(isMatch){
+//                         res.send(user._id)
+//                     }
+//                     else {
+//                         res.send('Incorrect password')
+//                       }
+//                 })
+//             }
+//             catch(e){
+//                 if(e instanceof TypeError){
+//                     res.status(400).send('Cannot find user')
+//                 }else{
+//                     res.status(500).send()
+//                 }
+//             }
+//         })
+//     } catch {
+//       res.status(500).send()
+//     }
+//   })
 
 
-module.exports = router;
+module.exports = router

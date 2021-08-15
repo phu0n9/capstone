@@ -12,13 +12,14 @@ export default function SearchBar({userId}) {
     const [buttonClicked,setButtonClicked] = useState(false)
     const [enablePopUp,setEnablePopUp] = useState(false)
     const [cancelBtn,setCancelBtn] = useState(false)
-
+    const [enableSearching,setEnableSearching] = useState(false)
+    const [enableLanding,setEnableLanding] = useState(false)
     const heroku = 'https://schaeffler.herokuapp.com/'
     const {
         queue,
         error,
+        landingStatus,searchStatus
     } = popUp()
-
 
     // 'http://localhost:5000/'
     useEffect(() => {
@@ -52,7 +53,7 @@ export default function SearchBar({userId}) {
             if (keyword !== ""){
                 const key = {
                     "keyword":keyword,
-                    "userId":userId,
+                    // "userId":userId,
                     "socketId":socket.id
                 }
                 socket.emit("begin-search",key)
@@ -64,7 +65,7 @@ export default function SearchBar({userId}) {
                 alert("Please enter a keyword")
             } 
         }
-    },[socket,keyword,pressed,userId,buttonClicked])
+    },[socket,keyword,pressed,buttonClicked])
     
     useEffect(() =>{
         if(socket == null) return
@@ -79,6 +80,41 @@ export default function SearchBar({userId}) {
         }
     },[socket,enablePopUp])
 
+    useEffect(() =>{
+        if(searchStatus === "available"){
+            setEnableSearching(false)
+        }
+        else if(searchStatus === "searching"){
+            setEnableSearching(true)
+        }
+        else{
+            setEnableSearching(false)
+        }
+    },[searchStatus])
+
+    useEffect(() =>{
+        if(landingStatus === "up"){
+            setEnableLanding(false)
+        }
+        else if(landingStatus === "down"){
+            setEnableLanding(true)
+        }
+        else{
+            setEnableLanding(false)
+        }
+    },[landingStatus])
+
+    useEffect(() =>{
+        if(enableSearching){
+            setEnablePopUp(false)
+            setEnableLanding(false)
+        }
+        else if(enableLanding){
+            setEnablePopUp(false)
+            setEnableSearching(false)
+        }
+    },[enableSearching,enableLanding])
+
     const handleCancelButton = (()=>{
         setCancelBtn(true)
         setEnablePopUp(false)
@@ -87,6 +123,7 @@ export default function SearchBar({userId}) {
     const handleExecuteItem = ((e)=>{
         const url = `http://localhost:5000/queue/execute/${e.target.value}`
         axios.get(url)
+        .then(()=>{ setEnableSearching(true)})
         .catch(error=> {console.log(error)})    
     })
 
@@ -136,7 +173,15 @@ export default function SearchBar({userId}) {
                 </div>
 
             </div> : ""}
-
+            {enableSearching ?
+            <div className="popup-container">
+                <img className="search-gif" src="search-gif.gif" alt="search-gif" />
+                <p className="search-text">Searching for item</p>
+            </div> 
+            : ""}
+            {enableLanding ? <div className="popup-container">{landingStatus}</div>: ""}
+            
+            
         </>
        
     )
