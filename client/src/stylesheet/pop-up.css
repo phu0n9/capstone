@@ -98,3 +98,15 @@
   float:right;
   margin-top:5px;
 }
+
+.search-text{
+  text-align: center;
+}
+
+.search-gif{
+  height:200px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}

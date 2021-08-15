@@ -10,6 +10,12 @@ const Pusher = require('pusher')
 require('dotenv').config()
 
 const app = express()
+
+const inventoryWatch = Inventory.watch()
+const queueWatch = Queue.watch()
+
+//----------------------------------------------------------------END OF IMPORT---------------------------------------
+// Import MongoDB and Moongoose
 const uri = process.env.ATLAS_URI
 
 const connection = mongoose.connection
@@ -25,10 +31,9 @@ mongoose.connect(uri,{
     useUnifiedTopology: true,
     useFindAndModify: false
 })
+//--------------------------------------------------------------END OF IMPORT MONGOOSE---------------------------------
 
-const inventoryWatch = Inventory.watch()
-const queueWatch = Queue.watch()
-
+// Import Pusher
 const pusher = new Pusher({
     appId: process.env.PUSHER_APP_ID,
     key: process.env.PUSHER_APP_KEY,
@@ -38,6 +43,9 @@ const pusher = new Pusher({
 })
 const channel = 'tasks'
 
+//------------------------------------------------------END OF IMPORT PUSHER -----------------------------------
+
+//Router
 const loginRouter = require('./routes/userLogin')
 const inventoryRouter = require('./routes/inventoryLoading')
 const sortRouter = require('./routes/sort')
@@ -53,8 +61,27 @@ app.use('/login',loginRouter)
 app.use('/inventory',inventoryRouter)
 app.use('/sort',sortRouter)
 app.use('/queue',popupRouter)
+//-------------------------------------------------------------END OF ROUTER-----------------------------------------
+//Import Auth0
+var jwt = require('express-jwt')
+var jwks = require('jwks-rsa')
 
+var jwtCheck = jwt({
+    secret: jwks.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: process.env.JWKS_URI
+  }),
+  audience: process.env.JWT_AUDIENCE,
+  issuer: process.env.JWT_ISSUER,
+  algorithms: [process.env.JWT_ALGORITHM]
+})
 
+app.use(jwtCheck)
+
+//-------------------------------------------------------------END OF AUTH0------------------------------------------
+// Production mode: Heroku
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,"client", "build")))
 
@@ -62,7 +89,9 @@ if (process.env.NODE_ENV === "production"){
         res.sendFile(path.join(__dirname,"client", "build", "index.html"));
     })
 }
+//------------------------------------------------------------END OF CONFIGURE PRODUCTION MODE-----------------------
 
+// Import Socketio
 const io = require('socket.io')(httpServer,{
     cors:{
         origin: [`http://localhost:3000`],
@@ -88,14 +117,14 @@ io.on("connection",socket =>{
         console.log(err)
     })
 })
+async function createQueue(content){
+    return await Queue.create(content)
+}
+//----------------------------------------------------------END OF IMPORT SOCKETIO-----------------------------------
 
 // async function createInventory(content){
 //     return await Inventory.create(content)
 // }
-
-async function createQueue(content){
-    return await Queue.create(content)
-}
 
 // async function deleteFirstItem(){
 //     return await Queue.deleteOne().sort({ createdAt: 1 })
@@ -104,6 +133,7 @@ async function createQueue(content){
 //         })
 // }
 
+// Mongoose Listening Stream
 inventoryWatch.on('change',async (change)=>{
     if(change.operationType === 'insert') {
         // const task = change.fullDocument
@@ -127,6 +157,8 @@ queueWatch.on('change', async (change) =>{
         .catch((error)=>{console.log(error)})
     }
 })
+
+//-------------------------------------------------------END OF MONGOOSE LISTENING STREAM----------------------------
 
 
 

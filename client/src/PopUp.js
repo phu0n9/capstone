@@ -7,11 +7,10 @@ export default function PopUp() {
 
     const [queue,setQueue] = useState([])
     const [error,setError] = useState(false)
+    const [landingStatus,setLandingStatus] = useState("up")
+    const [searchStatus, setSearchStatus] = useState("available")
     const heroku = 'https://schaeffler.herokuapp.com/queue'
-    const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY,{
-        'cluster':process.env.REACT_APP_PUSHER_CLUSTER,
-        forceTLS: true,
-    })
+    
     // 'http://localhost:5000/queue'
     function getQueue(){
         setError(false)
@@ -49,24 +48,34 @@ export default function PopUp() {
     }
 
     useEffect(() =>{
-        
-        const channel = pusher.subscribe('tasks')
-        channel.bind('deleted',function(){
+        const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY,{
+            'cluster':process.env.REACT_APP_PUSHER_CLUSTER,
+            forceTLS: true,
+        })
+        const channelTask = pusher.subscribe('tasks')
+        channelTask.bind('deleted',function(){
             fetchChanges()
         })
-        channel.bind('inserted',function(){
+        channelTask.bind('inserted',function(){
             fetchChanges()
         })
-        return () => channel.unbind()
-    },[])
-
-    useEffect(() =>{
-        const channel = pusher.subscribe('armarker')
-        channel.bind('land',function(data){
-            console.log(data.landed)
+        const channelLanding = pusher.subscribe('armarker')
+        channelLanding.bind('land',function(data){
+            setLandingStatus(data.landingStatus)
         })
-        return () => channel.unbind()
+        const channelSearch = pusher.subscribe('search')
+        channelSearch.bind('keyword',function(data){
+            if (data !== ""){
+                setSearchStatus("searching")
+            }
+            else setSearchStatus("done")
+        })
+        return () => {
+            channelTask.unbind()
+            channelLanding.unbind()
+            channelSearch.unbind()
+        }
     },[])
 
-    return {queue,error}
+    return {queue,error,landingStatus,searchStatus}
 }

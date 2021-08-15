@@ -1,4 +1,5 @@
 import React from 'react'
+import LogoutButton from './Components/LogoutButton'
 
 export default function Setting() {
     return (
@@ -7,7 +8,7 @@ export default function Setting() {
             <div className="dropdown">
                 <img src="user.png" alt="user" className="img-wrapper"/>
                 <div className="dropdown-content">
-                    <p>Log out</p>
+                    <LogoutButton/>
                 </div>
             </div>
             <img src="queue.png" alt="queue" className="img-wrapper"/>

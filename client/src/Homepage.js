@@ -7,22 +7,31 @@ import PhotoDisplay from './PhotoDisplay'
 import SidebarBox from './SidebarBox'
 import Setting from './Setting'
 import {useState,useEffect} from 'react'
+import {useAuth0} from '@auth0/auth0-react'
 
 export default function Homepage() {
     const [clickPhoto,setClickPhoto] = useState()
-    const [userId,setUserId] = useState()
+    // const [userId,setUserId] = useState()
     const [onClick,setOnClick] = useState(false)
+    const {isAuthenticated,getAccessTokenSilently} = useAuth0()
 
     useEffect(()=>{
-        setUserId(localStorage.getItem('userId'))
-    },[])
+        async function getAccessToken(){
+            if(isAuthenticated){
+                const token = await getAccessTokenSilently()
+                console.log(token)
+            }
+        }
+        // setUserId(localStorage.getItem('userId'))
+        
+    },[getAccessTokenSilently,isAuthenticated])
 
 
     return (
         <>
         <span className="grid-container">
             <img src="schaeffler-logo.jpg" alt="logo" className="logo"/>
-            <SearchBar userId={userId}/>
+            <SearchBar/>
             <Setting/>
             {/* <label class="switch">
                 <input type="checkbox" checked/>
