@@ -2,9 +2,9 @@ import React,{useEffect,useState} from 'react'
 import {io} from 'socket.io-client'
 import popUp from './PopUp'
 import axios from 'axios'
+import {useAuth0} from '@auth0/auth0-react'
 
-
-export default function SearchBar({userId}) {
+export default function SearchBar() {
   
     const [socket,setSocket] = useState()
     const [pressed,setPress] = useState(false)
@@ -14,12 +14,31 @@ export default function SearchBar({userId}) {
     const [cancelBtn,setCancelBtn] = useState(false)
     const [enableSearching,setEnableSearching] = useState(false)
     const [enableLanding,setEnableLanding] = useState(false)
+    const [userId,setUserId] = useState("")
     const heroku = 'https://schaeffler.herokuapp.com/'
     const {
         queue,
         error,
         landingStatus,searchStatus
     } = popUp()
+
+    const {isAuthenticated,getAccessTokenSilently} = useAuth0()
+
+    useEffect(()=>{
+        async function getAccessToken(){
+            if(isAuthenticated){
+                    const token = await getAccessTokenSilently()
+                    await axios.get('http://localhost:5000/protected',{
+                        headers: {
+                            authorization:`Bearer ${token}`
+                        }
+                    })
+                    .then(response => setUserId(response.data))
+                    .catch(err => console.log(err))
+            }
+        }
+        getAccessToken()        
+    },[getAccessTokenSilently,isAuthenticated])
 
     // 'http://localhost:5000/'
     useEffect(() => {
@@ -53,7 +72,7 @@ export default function SearchBar({userId}) {
             if (keyword !== ""){
                 const key = {
                     "keyword":keyword,
-                    // "userId":userId,
+                    "userId":userId,
                     "socketId":socket.id
                 }
                 socket.emit("begin-search",key)
@@ -65,7 +84,7 @@ export default function SearchBar({userId}) {
                 alert("Please enter a keyword")
             } 
         }
-    },[socket,keyword,pressed,buttonClicked])
+    },[socket,keyword,pressed,buttonClicked,userId])
     
     useEffect(() =>{
         if(socket == null) return
