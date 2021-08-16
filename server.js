@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const axios = require('axios')
 const Inventory = require('./model/inventory.model')
 const Queue = require('./model/queue.model')
 
@@ -46,7 +47,7 @@ const channel = 'tasks'
 //------------------------------------------------------END OF IMPORT PUSHER -----------------------------------
 
 //Router
-const loginRouter = require('./routes/userLogin')
+// const loginRouter = require('./routes/userLogin')
 const inventoryRouter = require('./routes/inventoryLoading')
 const sortRouter = require('./routes/sort')
 const popupRouter = require('./routes/popup')
@@ -57,7 +58,7 @@ const httpServer = require('http').createServer(app).listen(PORT)
 app.use(cors())
 app.use(express.json())
 
-app.use('/login',loginRouter)
+// app.use('/login',loginRouter)
 app.use('/inventory',inventoryRouter)
 app.use('/sort',sortRouter)
 app.use('/queue',popupRouter)
@@ -79,6 +80,33 @@ var jwtCheck = jwt({
 })
 
 app.use(jwtCheck)
+
+app.get('/protected', async (req, res) => {
+    try{
+        const accessToken = req.headers.authorization.split(' ')[1]
+        const response = await axios.get(process.env.JWT_ISSUER+'userInfo',{
+            headers:{
+                authorization: `Bearer ${accessToken}`
+            }
+        })
+        res.send(response.data.sub)
+    }
+    catch(error){
+        console.log(error.message)
+    }
+})
+
+app.use((req,res,next) => {
+    const error = new Error("Not found")
+    error.status = 404
+    next(error)
+})
+
+app.use((error,req,res,next)=>{
+    const status = error.status || 500
+    const message = error.message || 'Internal Server Error'
+    res.status(status).send(message)
+})
 
 //-------------------------------------------------------------END OF AUTH0------------------------------------------
 // Production mode: Heroku

@@ -27,7 +27,7 @@ router.route('/delete/:id').delete(async (req, res) => {
     await Queue.findByIdAndDelete(req.params.id).exec((err, inventory) => {
         if (err) return (err)
         const response = {
-            message: "Todo successfully deleted",
+            message: "Successfully deleted",
             id: req.params.id
         }
         return res.status(200).send(response)

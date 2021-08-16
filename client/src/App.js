@@ -3,6 +3,7 @@ import HandleLogin from './HandleLogin'
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   BrowserRouter as Router,
+  Route,
   Switch
 } from 'react-router-dom'
 import React from 'react'
@@ -17,6 +18,7 @@ function App() {
       <Switch>
         <PublicRoute restricted={isAuthenticated} component={HandleLogin} path="/" exact/>
         <PrivateRoute restricted={isAuthenticated} component={Homepage} path="/homepage" exact />
+        <Route path="*" component={() => "404 NOT FOUND"}/>
       </Switch>
     </Router>
   )

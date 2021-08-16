@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom';
 
 const PrivateRoute = ({component: Component,restricted, ...rest}) => {
     return (
@@ -8,6 +8,7 @@ const PrivateRoute = ({component: Component,restricted, ...rest}) => {
             <Component {...props} />
             :            
             <Redirect to="/" />
+
         )} />
     )
 }
