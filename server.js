@@ -76,7 +76,7 @@ var jwtCheck = jwt({
   }),
   audience: process.env.JWT_AUDIENCE,
   issuer: process.env.JWT_ISSUER,
-  algorithms: [process.env.JWT_ALGORITHM]
+  algorithms: ['RS256']
 })
 
 app.use(jwtCheck)

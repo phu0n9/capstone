@@ -1,5 +1,4 @@
 import Homepage from './Homepage'
-import HandleLogin from './HandleLogin'
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   BrowserRouter as Router,
@@ -8,16 +7,14 @@ import {
 } from 'react-router-dom'
 import React from 'react'
 import {useAuth0} from '@auth0/auth0-react'
-import PublicRoute from './Route/PublicRoute'
-import PrivateRoute from './Route/PrivateRoute'
+import ProtectedRoute from './Route/ProtectedRoute'
 
 function App() {
   const {isAuthenticated} = useAuth0()
   return (
   <Router>
       <Switch>
-        <PublicRoute restricted={isAuthenticated} component={HandleLogin} path="/" exact/>
-        <PrivateRoute restricted={isAuthenticated} component={Homepage} path="/homepage" exact />
+        <ProtectedRoute restricted={isAuthenticated} component={Homepage} path="/" exact />
         <Route path="*" component={() => "404 NOT FOUND"}/>
       </Switch>
     </Router>
