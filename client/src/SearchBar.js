@@ -139,18 +139,33 @@ export default function SearchBar() {
         setEnablePopUp(false)
     })
 
-    const handleExecuteItem = ((e)=>{
-        const url = `http://localhost:5000/queue/execute/${e.target.value}`
-        axios.get(url)
-        .then(()=>{ setEnableSearching(true)})
-        .catch(error=> {console.log(error)})    
+    const handleExecuteItem = (async (e)=>{
+        if(isAuthenticated){
+            const token = await getAccessTokenSilently()
+            const url = `http://localhost:5000/queue/execute/${e.target.value}`
+            axios.get(url,{
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
+            .then(()=>{ setEnableSearching(true)})
+            .catch(error=> {console.log(error)})    
+        }
     })
 
-    const handleCancelItem = ((e)=>{
-        const url = `http://localhost:5000/queue/delete/${e.target.value}`
-        axios.delete(url)
-        .catch(error=> {console.log(error)})    
+    const handleCancelItem = (async (e)=>{
+        if(isAuthenticated){
+            const token = await getAccessTokenSilently()
+            const url = `http://localhost:5000/queue/delete/${e.target.value}`
+            axios.delete(url,{
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
+            .catch(error=> {console.log(error)})    
+        }
     })
+
 
     return (
         <>

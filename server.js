@@ -64,10 +64,10 @@ app.use('/sort',sortRouter)
 app.use('/queue',popupRouter)
 //-------------------------------------------------------------END OF ROUTER-----------------------------------------
 //Import Auth0
-var jwt = require('express-jwt')
-var jwks = require('jwks-rsa')
+const jwt = require('express-jwt')
+const jwks = require('jwks-rsa')
 
-var jwtCheck = jwt({
+const jwtCheck = jwt({
     secret: jwks.expressJwtSecret({
         cache: true,
         rateLimit: true,

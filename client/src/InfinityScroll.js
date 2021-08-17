@@ -1,6 +1,7 @@
 import {useEffect,useState} from 'react'
 import axios from 'axios'
 import Pusher from 'pusher-js'
+import {useAuth0} from '@auth0/auth0-react'
 require('dotenv').config()
 
 export default function InfinityScroll(pageNumber,keyword,selection) {
@@ -10,28 +11,35 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
     const [hasMore,setHasMore] = useState(false)       
     const [change,setChange] = useState(false)
     const heroku = 'https://schaeffler.herokuapp.com/'
+    const {isAuthenticated,getAccessTokenSilently} = useAuth0()
 
-    function fetchApi(URL,paramsDict){
-        axios({
-            method:'GET',
-            url: URL,
-            params:paramsDict
-        })
-        .then(res => {
-            setInventory(() =>{
-                return [...new Set([...'',...res.data.map(i => i)])]
-            })
-            // setHasMore(res.data.length > 0)
-            // setLoading(false)
-        })
-        .catch(e =>{
-            setError(true)
-            console.log('Error: '+e)
-        })
-    }
-    
+   
     // 'http://localhost:5000/inventory'
     useEffect(() =>{
+        async function fetchApi(URL,paramsDict){
+            if(isAuthenticated){
+                const token = await getAccessTokenSilently()
+                await axios({
+                    method:'GET',
+                    url: URL,
+                    params:paramsDict,
+                    headers: {
+                        authorization:`Bearer ${token}`
+                    }
+                })
+                .then(res => {
+                    setInventory(() =>{
+                        return [...new Set([...'',...res.data.map(i => i)])]
+                    })
+                    // setHasMore(res.data.length > 0)
+                    // setLoading(false)
+                })
+                .catch(e =>{
+                    setError(true)
+                    console.log('Error: '+e)
+                })
+            }
+        }    
         const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY,{
             'cluster':process.env.REACT_APP_PUSHER_CLUSTER,
             forceTLS: true,
@@ -42,11 +50,6 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
             fetchApi('http://localhost:5000/inventory',{page:5})
             setChange(true)
         })
-        return () => channel.unbind('inserted')
-    },[])
-
-
-    useEffect(() =>{
         if(keyword !== undefined){
             switch(selection){
                 case "location":
@@ -62,7 +65,8 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
                     break
             }
         }
-    },[keyword,selection])
+        return () => channel.unbind('inserted')
+    },[isAuthenticated,getAccessTokenSilently,keyword,selection])
 
     useEffect(() =>{
         setLoading(true)

@@ -1,6 +1,8 @@
 import {useState,useEffect} from 'react'
 import axios from 'axios'
 import Pusher from 'pusher-js'
+import {useAuth0} from '@auth0/auth0-react'
+
 require('dotenv').config()
 
 export default function PopUp() {
@@ -10,25 +12,35 @@ export default function PopUp() {
     const [landingStatus,setLandingStatus] = useState("up")
     const [searchStatus, setSearchStatus] = useState("available")
     const heroku = 'https://schaeffler.herokuapp.com/queue'
+    const {isAuthenticated,getAccessTokenSilently} = useAuth0()
     
     // 'http://localhost:5000/queue'
-    function getQueue(){
-        setError(false)
-        axios({
-            method:'GET',
-            url: 'http://localhost:5000/queue',
-        })
-        .then(res => {
-            setQueue(prevInventory =>{
-                return [...new Set([...prevInventory,...res.data.map(i => i)])]
-            })
-        })
-        .catch(e =>{
-            setError(true)
-            console.log('Error: '+e)
-        })
-    }
-    useEffect(() => getQueue(),[])
+    
+    useEffect(() =>{
+        async function getQueue(){
+            if(isAuthenticated){
+                const token = await getAccessTokenSilently()
+                setError(false)
+                await axios({
+                    method:'GET',
+                    url: 'http://localhost:5000/queue',
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                })
+                .then(res => {
+                    setQueue(prevInventory =>{
+                        return [...new Set([...prevInventory,...res.data.map(i => i)])]
+                    })
+                })
+                .catch(e =>{
+                    setError(true)
+                    console.log('Error: '+e)
+                })
+            }
+        }
+        getQueue()
+    },[getAccessTokenSilently,isAuthenticated])
 
     function fetchChanges(){
         setError(false)
