@@ -120,15 +120,6 @@ app.use((error,req,res,next)=>{
 })
 
 //-------------------------------------------------------------END OF AUTH0------------------------------------------
-// Production mode: Heroku
-if (process.env.NODE_ENV === "production"){
-    app.use(express.static(path.join(__dirname,"client", "build")))
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname,"client", "build", "index.html"));
-    })
-}
-//------------------------------------------------------------END OF CONFIGURE PRODUCTION MODE-----------------------
 
 // Import Socketio
 const io = require('socket.io')(httpServer,{
@@ -218,5 +209,14 @@ queueWatch.on('change', async (change) =>{
 
 //-------------------------------------------------------END OF MONGOOSE LISTENING STREAM----------------------------
 
+// Production mode: Heroku
+if (process.env.NODE_ENV === "production"){
+    app.use(express.static(path.join(__dirname,"client", "build")))
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname,"client", "build", "index.html"));
+    })
+}
+//------------------------------------------------------------END OF CONFIGURE PRODUCTION MODE-----------------------
 
 
