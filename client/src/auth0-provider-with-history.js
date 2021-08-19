@@ -17,8 +17,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
     <Auth0Provider
       domain={domain}
       clientId={clientId}
-      // redirectUri={window.location.origin}
-      redirectUri='https://schaeffler.herokuapp.com/'
+      redirectUri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
       audience={process.env.REACT_APP_AUTH0_AUDIENCE}
       scope={process.env.REACT_APP_AUTH0_SCOPE}
