@@ -1,17 +1,40 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import LogoutButton from './Components/LogoutButton'
+import Upload from './Components/Upload'
+import Queue from './Components/Queue'
+import {useAuth0} from '@auth0/auth0-react'
+import axios from 'axios'
 
-export default function Setting() {
+export default function Setting({setQueueOnClick,setUploadOnClick}) {
+    const [userPicture,setUserPicture] = useState("")
+    const {isAuthenticated,getAccessTokenSilently} = useAuth0()
+
+    useEffect(() =>{
+        async function getAccessToken(){
+            if(isAuthenticated){
+                const token = await getAccessTokenSilently()
+                await axios.get('http://localhost:5000/protected',{
+                    headers: {
+                        authorization:`Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    setUserPicture(response.data.picture)
+                })
+                .catch(err => console.log(err))
+            }
+        }
+        getAccessToken()  
+    },[getAccessTokenSilently,isAuthenticated])
+
     return (
-        <span className="setting-wrapper">
-            <img src="upload.png" alt="noti" className="img-wrapper"/>
-            <div className="dropdown">
-                <img src="user.png" alt="user" className="img-wrapper"/>
-                <div className="dropdown-content">
-                    <LogoutButton/>
-                </div>
+        <div className="dropdown">
+            <img src={userPicture} alt="user" className="img-wrapper"/>
+            <div className="dropdown-content">
+                <Upload setUploadOnClick={setUploadOnClick}/>
+                <Queue setQueueOnClick={setQueueOnClick}/>
+                <LogoutButton/>
             </div>
-            <img src="queue.png" alt="queue" className="img-wrapper"/>
-        </span>
+        </div>
     )
 }

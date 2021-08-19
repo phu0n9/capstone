@@ -19,10 +19,10 @@ router.route('').get(jwtCheck,async (req,res,next) => {
     const page = req.query.page || 1 // Page 
     const resPerPage = 5 // results per page
     await Inventory.find().sort({'createdAt':-1}).skip(page - resPerPage).limit(resPerPage)
-    .exec((err, inventory) => {
-      if (err) return next(err)
-      res.send(inventory) // return data JSON
+    .then(inventory =>{      
+      res.send(inventory) // return data JSON   
     })
+    .catch(err => console.log(err))    
 })
 
 module.exports = router

@@ -10,6 +10,7 @@
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "express-jwt": "^6.1.0",
+    "express-jwt-authz": "^2.4.1",
     "express-session": "^1.17.2",
     "http": "0.0.1-security",
     "init": "^0.1.2",

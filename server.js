@@ -4,6 +4,7 @@ const cors = require('cors')
 const axios = require('axios')
 const Inventory = require('./model/inventory.model')
 const Queue = require('./model/queue.model')
+const Process = require('./model/Process.model')
 
 const path = require('path')
 const Pusher = require('pusher')
@@ -66,6 +67,7 @@ app.use('/queue',popupRouter)
 //Import Auth0
 const jwt = require('express-jwt')
 const jwks = require('jwks-rsa')
+const jwtAuthz = require('express-jwt-authz')
 
 const jwtCheck = jwt({
     secret: jwks.expressJwtSecret({
@@ -79,9 +81,14 @@ const jwtCheck = jwt({
   algorithms: ['RS256']
 })
 
+const checkPermission = jwtAuthz(['read:messages'],{
+    customScopeKey: 'permissions',
+    checkAllScopes: true
+})
+
 app.use(jwtCheck)
 
-app.get('/protected', async (req, res) => {
+app.get('/protected', jwtCheck,async (req, res) => {
     try{
         const accessToken = req.headers.authorization.split(' ')[1]
         const response = await axios.get(process.env.JWT_ISSUER+'userInfo',{
@@ -89,7 +96,7 @@ app.get('/protected', async (req, res) => {
                 authorization: `Bearer ${accessToken}`
             }
         })
-        res.send(response.data.sub)
+        res.send(response.data)
     }
     catch(error){
         console.log(error.message)
@@ -127,14 +134,21 @@ const io = require('socket.io')(httpServer,{
     },
 })
 
-io.on("connection",socket =>{
-    socket.emit("popup",true)
+io.on("connection",async socket =>{
+    // socket.emit("popup",true)
+    const document = await getGoingProcess("default")
+    socket.emit('executePopUp',document.onProcess)
 
     socket.on('begin-search',async delta =>{
         await createQueue(delta).then(()=>{
             socket.emit('popup',true)
         })
         .catch(err =>{console.log(err)})
+    })
+
+    socket.on('execute',async data =>{
+        const executeDocument = await getOnProcess(data)
+        socket.emit('executePopUp',executeDocument.onProcess)
     })
 
     socket.on('disconnect',()=>{
@@ -145,8 +159,19 @@ io.on("connection",socket =>{
         console.log(err)
     })
 })
+
 async function createQueue(content){
     return await Queue.create(content)
+}
+
+async function getOnProcess(name){
+    const document = await Process.findOneAndUpdate(name,{onProcess: true})
+    if (document) return document
+    return await Process.create({name:name, onProcess: false })
+}
+
+async function getGoingProcess(name){
+    return await Process.findOne({name:name})
 }
 //----------------------------------------------------------END OF IMPORT SOCKETIO-----------------------------------
 

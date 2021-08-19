@@ -21,6 +21,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
       onRedirectCallback={onRedirectCallback}
       audience={process.env.REACT_APP_AUTH0_AUDIENCE}
       scope={process.env.REACT_APP_AUTH0_SCOPE}
+      useRefreshTokens={true}
     >
       {children}
     </Auth0Provider>

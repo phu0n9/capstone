@@ -1,37 +1,29 @@
 /* setting wrapper */
-.setting-wrapper{
-    border-radius: 13px;
-    width: 140px;
-    height: 40px;
-    margin-top: 10px;
-    border: 1px solid #acabab;
-    border-bottom: 4px solid #acabab; 
-    margin-left: 350px;
-    float: right;
-}
 
 .img-wrapper{
-    padding-left: 6px;
-    padding-top: 4px;
-    width:30px;
-    height:30px;
-    margin-left: 11px;
+    width:50px;
+    height:50px;
+    border-radius: 50%;
+    box-shadow: 5px 0px 5px 0px;
 }
 
 .logo{
     width: 15%;
     height:100%;
-    margin: 5px 30px;
+    margin: 5px 20px;
 }
 
 .dropdown {
     position: relative;
-    display: inline-block;
+    margin: 5px auto;
+    
 }
   
 .dropdown-content {
     display: none;
+    margin-left: -50px;
     position: absolute;
+    justify-content: center;
     background-color: #f9f9f9;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -41,4 +33,8 @@
   
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+.upload-item{
+    margin: 25% 30%;
 }

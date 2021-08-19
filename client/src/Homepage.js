@@ -14,6 +14,8 @@ import {useAuth0} from '@auth0/auth0-react'
 export default function Homepage() {
     const [clickPhoto,setClickPhoto] = useState()
     const [onClick,setOnClick] = useState(false)
+    const [queueOnClick,setQueueOnClick] = useState(false)
+    const [uploadOnClick,setUploadOnClick] = useState(false)
     const {isLoading} = useAuth0()
 
     if (isLoading) {
@@ -24,8 +26,8 @@ export default function Homepage() {
         <>
         <span className="grid-container">
             <img src="schaeffler-logo.jpg" alt="logo" className="logo"/>
-            <SearchBar/>
-            <Setting/>
+            <SearchBar queueOnClick={queueOnClick} setQueueOnClick={setQueueOnClick} uploadOnClick={uploadOnClick} setUploadOnClick={setUploadOnClick}/>
+            <Setting setQueueOnClick={setQueueOnClick} setUploadOnClick={setUploadOnClick}/>
             {/* <label class="switch">
                 <input type="checkbox" checked/>
                 <span class="slider round"></span>

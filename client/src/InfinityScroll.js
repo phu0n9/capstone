@@ -46,20 +46,24 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            console.log("updated")
-            fetchApi('http://localhost:5000/inventory',{page:5})
+            // fetchApi('http://localhost:5000/inventory',{page:5}) //change here
+            fetchApi(heroku+'inventory',{page:5}) //change here
             setChange(true)
         })
         if(keyword !== undefined){
             switch(selection){
                 case "location":
-                    fetchApi('http://localhost:5000/sort/sortByLocation',{location:keyword})
+                    // fetchApi('http://localhost:5000/sort/sortByLocation',{location:keyword}) //change here
+                    fetchApi(heroku+'sort/sortByLocation',{location:keyword}) //change here
+
                     break
                 case "userId":
-                    fetchApi('http://localhost:5000/sort/sortByUserId',{userId:keyword})
+                    // fetchApi('http://localhost:5000/sort/sortByUserId',{userId:keyword}) //change here
+                    fetchApi(heroku+'sort/sortByUserId',{userId:keyword}) //change here
                     break
                 case "date":
-                    fetchApi('http://localhost:5000/sort/sortByTime',{time:keyword})
+                    // fetchApi('http://localhost:5000/sort/sortByTime',{time:keyword}) //change here
+                    fetchApi(heroku+'sort/sortByTime',{time:keyword}) //change here
                     break
                 default:
                     break
@@ -69,28 +73,38 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
     },[isAuthenticated,getAccessTokenSilently,keyword,selection])
 
     useEffect(() =>{
+        async function getPages(){
+            if(isAuthenticated){
+                const token = await getAccessTokenSilently()
+                await axios({
+                    method:'GET',
+                    // url: 'http://localhost:5000/inventory', //change here
+                    url: heroku+'inventory', //change here
+                    params:{page:pageNumber},
+                    headers:{
+                        authorization:`Bearer ${token}`
+                    }
+                })
+                .then(res => {
+                    setInventory(prevInventory =>{
+                        return [...new Set([...prevInventory,...res.data.map(i => i)])]
+                    })
+                        setHasMore(res.data.length > 0)
+                        setLoading(false)
+                        setChange(false)
+                })
+                .catch(e =>{
+                    setError(true)
+                    console.log('Error: '+e)
+                })
+            }
+        }
         setLoading(true)
         setError(false)
         if(keyword === ''){
-            axios({
-                method:'GET',
-                url: 'http://localhost:5000/inventory',
-                params:{page:pageNumber}
-            })
-            .then(res => {
-                setInventory(prevInventory =>{
-                    return [...new Set([...prevInventory,...res.data.map(i => i)])]
-                })
-                    setHasMore(res.data.length > 0)
-                    setLoading(false)
-                    setChange(false)
-            })
-            .catch(e =>{
-                setError(true)
-                console.log('Error: '+e)
-            })
+            getPages()
         }
-    },[pageNumber,keyword])
+    },[pageNumber,keyword,isAuthenticated,getAccessTokenSilently])
 
     return {loading,hasMore,error,inventory,change}
 }

@@ -23,7 +23,8 @@ export default function PopUp() {
                 setError(false)
                 await axios({
                     method:'GET',
-                    url: 'http://localhost:5000/queue',
+                    // url: 'http://localhost:5000/queue',//change here
+                    url: heroku,//change here
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -42,24 +43,30 @@ export default function PopUp() {
         getQueue()
     },[getAccessTokenSilently,isAuthenticated])
 
-    function fetchChanges(){
-        setError(false)
-            axios({
-                method:'GET',
-                url: heroku,
-            })
-            .then(res => {
-                setQueue(() =>{
-                    return [...new Set([...'',...res.data.map(i => i)])]
-                })
-            })
-            .catch(e =>{
-                setError(true)
-                console.log('Error: '+e)
-            })
-    }
-
     useEffect(() =>{
+        async function fetchChanges(){
+            if(isAuthenticated){
+                const token = await getAccessTokenSilently()
+                setError(false)
+                await axios({
+                    method:'GET',
+                    // url: 'http://localhost:5000/queue',//change here
+                    url: heroku, //change here
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                })
+                .then(res => {
+                    setQueue(() =>{
+                        return [...new Set([...'',...res.data.map(i => i)])]
+                    })
+                })
+                .catch(e =>{
+                    setError(true)
+                    console.log('Error: '+e)
+                })
+            }
+        }
         const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY,{
             'cluster':process.env.REACT_APP_PUSHER_CLUSTER,
             forceTLS: true,
@@ -87,7 +94,7 @@ export default function PopUp() {
             channelLanding.unbind()
             channelSearch.unbind()
         }
-    },[])
+    },[getAccessTokenSilently,isAuthenticated])
 
     return {queue,error,landingStatus,searchStatus}
 }

@@ -27,15 +27,12 @@ const pusher = new Pusher({
 })
 
 router.route('').get(jwtCheck,async (req,res) => {
-    await Queue.countDocuments(function(err,count){
-        if(!err && count !== 0){
-            Queue.find().sort({ 'createdAt': -1 })
-            .exec((err, item) => {
-                if (err) return (err)
-                res.send(item)
-            })
-        }
+    await Queue.find().sort({ 'createdAt': -1 })
+    .exec((err, item) => {
+        if (err) return (err)
+        res.send(item)
     })
+
 })
 
 router.route('/delete/:id').delete(jwtCheck,async (req, res) => {
