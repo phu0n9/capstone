@@ -147,7 +147,7 @@ io.on("connection",async socket =>{
     })
 
     socket.on('execute',async data =>{
-        const executeDocument = await getOnProcess(data)
+        const executeDocument = await getOnProcess(data,true)
         socket.emit('executePopUp',executeDocument.onProcess)
     })
 
@@ -164,10 +164,10 @@ async function createQueue(content){
     return await Queue.create(content)
 }
 
-async function getOnProcess(name){
-    const document = await Process.findOneAndUpdate(name,{onProcess: true})
+async function getOnProcess(name,status){
+    const document = await Process.findOneAndUpdate(name,{onProcess: status})
     if (document) return document
-    return await Process.create({name:name, onProcess: false })
+    return await Process.create({name:name, onProcess: status })
 }
 
 async function getGoingProcess(name){
@@ -197,6 +197,7 @@ inventoryWatch.on('change',async (change)=>{
             // location: task.location
             }
         ).catch((error)=>{console.log(error)})
+        getOnProcess('default',false)
     } 
 })
 
