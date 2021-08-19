@@ -79,7 +79,11 @@ const jwtCheck = jwt({
   audience: process.env.JWT_AUDIENCE,
   issuer: process.env.JWT_ISSUER,
   algorithms: ['RS256']
-})
+}).unless({
+    path:[
+      '/'
+    ]}
+)
 
 const checkPermission = jwtAuthz(['read:messages'],{
     customScopeKey: 'permissions',

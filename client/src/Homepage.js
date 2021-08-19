@@ -10,7 +10,6 @@ import Loading from './Components/Loading'
 import {useState} from 'react'
 import {useAuth0} from '@auth0/auth0-react'
 
-
 export default function Homepage() {
     const [clickPhoto,setClickPhoto] = useState()
     const [onClick,setOnClick] = useState(false)
