@@ -79,7 +79,7 @@ var jwtCheck = jwt({
   audience: process.env.JWT_AUDIENCE,
   issuer: process.env.JWT_ISSUER,
   algorithms: ['RS256']
-})
+}).unless({path: ['/']})
 
 const checkPermission = jwtAuthz(['read:messages'],{
     customScopeKey: 'permissions',
@@ -114,6 +114,8 @@ app.use((error,req,res,next)=>{
     const message = error.message || 'Internal Server Error'
     res.status(status).send(message)
 })
+
+
 
 //-------------------------------------------------------------END OF AUTH0------------------------------------------
 
