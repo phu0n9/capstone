@@ -177,7 +177,7 @@ export default function RightBody({setClickGallery,clickGallery,setQueueOnClick,
             setClickGallery(true)
             setKeyword(rackClick+"."+rowClick)
         }
-    },[rowClick,rackClick])
+    },[rowClick,rackClick,setClickGallery])
 
     return (
         <>
