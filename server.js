@@ -69,7 +69,7 @@ const jwt = require('express-jwt')
 const jwks = require('jwks-rsa')
 const jwtAuthz = require('express-jwt-authz')
 
-const jwtCheck = jwt({
+var jwtCheck = jwt({
     secret: jwks.expressJwtSecret({
         cache: true,
         rateLimit: true,
