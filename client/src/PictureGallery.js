@@ -14,6 +14,7 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
     const [clicked,setClicked] = useState(false)
     const [showImage,setShowImage] = useState("")
     const [clickBiggerImg,setClickBiggerImg] = useState(false)
+    const heroku = 'https://schaeffler.herokuapp.com/'
 
     const {
         inventory,
@@ -36,7 +37,8 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
         if(isAuthenticated){
             setClicked(true)
             const token = await getAccessTokenSilently()
-            await axios.get(`http://localhost:5000/inventory/${id}`,{
+            // await axios.get(`http://localhost:5000/inventory/${id}`,{
+                await axios.get(heroku+`inventory/${id}`,{ //change here
                 headers:{
                     authorization: `Bearer ${token}`
                 }

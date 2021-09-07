@@ -25,8 +25,8 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
         async function getAccessToken(){
             if(isAuthenticated){
                 const token = await getAccessTokenSilently()
-                await axios.get('http://localhost:5000/protected',{ //change here
-                // await axios.get(heroku+'protected',{ //change here
+                // await axios.get('http://localhost:5000/protected',{ //change here
+                await axios.get(heroku+'protected',{ //change here
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -49,7 +49,8 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
-                await axios.post('http://localhost:5000/search' //change here
+                // await axios.post('http://localhost:5000/search' //change here
+                await axios.post(heroku+'search' //change here
                 ,{keyword:keyword,userId:userId},{headers:headers}
                     // url:  heroku+'search', //change here
                 ).then(response => {

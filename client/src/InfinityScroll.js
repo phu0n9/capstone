@@ -43,8 +43,8 @@ export default function InfinityScroll(pageNumber,keyword) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            fetchApi('http://localhost:5000/inventory',{page:5}) //change here
-            // fetchApi(heroku+'inventory',{page:5}) //change here
+            // fetchApi('http://localhost:5000/inventory',{page:5}) //change here
+            fetchApi(heroku+'inventory',{page:5}) //change here
         })
         return () => channel.unbind('inserted')
     },[isAuthenticated,getAccessTokenSilently])
@@ -57,8 +57,8 @@ export default function InfinityScroll(pageNumber,keyword) {
                 setError(false)
                 await axios({
                     method:'GET',
-                    url: 'http://localhost:5000/inventory', //change here
-                    // url: heroku+'inventory', //change here
+                    // url: 'http://localhost:5000/inventory', //change here
+                    url: heroku+'inventory', //change here
                     params:{page:pageNumber},
                     headers:{
                         authorization:`Bearer ${token}`
