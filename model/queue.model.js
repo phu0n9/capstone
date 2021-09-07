@@ -10,8 +10,7 @@ const Queue = new Schema({
         required:true
     },
     onProcess:{
-        type:Boolean,
-        required:true
+        type:Boolean
     }
 },{   
     timestamps: true,

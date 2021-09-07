@@ -4,7 +4,6 @@ const cors = require('cors')
 const axios = require('axios')
 const Inventory = require('./model/inventory.model')
 const Queue = require('./model/queue.model')
-const Process = require('./model/Process.model')
 
 const path = require('path')
 const Pusher = require('pusher')
@@ -21,11 +20,6 @@ const queueWatch = Queue.watch()
 const uri = process.env.ATLAS_URI
 
 const connection = mongoose.connection
-connection.once('open',() => {
-    console.log("MongoDB database connection established successfully")
-})
-
-connection.on('error', console.error.bind(console, 'Connection Error:'))
 
 mongoose.connect(uri,{
     useNewUrlParser:true,
@@ -33,6 +27,13 @@ mongoose.connect(uri,{
     useUnifiedTopology: true,
     useFindAndModify: false
 })
+
+connection.once('open',() => {
+    console.log("MongoDB database connection established successfully")
+})
+
+connection.on('error', console.error.bind(console, 'Connection Error:'))
+
 //--------------------------------------------------------------END OF IMPORT MONGOOSE---------------------------------
 
 // Import Pusher
@@ -48,21 +49,20 @@ const channel = 'tasks'
 //------------------------------------------------------END OF IMPORT PUSHER -----------------------------------
 
 //Router
-// const loginRouter = require('./routes/userLogin')
-const inventoryRouter = require('./routes/inventoryLoading')
-const sortRouter = require('./routes/sort')
-const popupRouter = require('./routes/popup')
+app.use(cors())
+app.use(express.json())
 
 const PORT = process.env.PORT || 5000
 const httpServer = require('http').createServer(app).listen(PORT)
 
-app.use(cors())
-app.use(express.json())
+const inventoryRouter = require('./routes/inventoryLoading')
+const popupRouter = require('./routes/popup')
+const searchRouter = require('./routes/search')
 
-// app.use('/login',loginRouter)
 app.use('/inventory',inventoryRouter)
-app.use('/sort',sortRouter)
 app.use('/queue',popupRouter)
+app.use('/search',searchRouter)
+
 //-------------------------------------------------------------END OF ROUTER-----------------------------------------
 //Import Auth0
 const jwt = require('express-jwt')
@@ -121,65 +121,15 @@ app.use((error,req,res,next)=>{
 
 //-------------------------------------------------------------END OF AUTH0------------------------------------------
 
-// Import Socketio
-const io = require('socket.io')(httpServer,{
+// Import cors
+require('socket.io')(httpServer,{
     cors:{
         origin: [`http://localhost:3000`],
         methods: ["GET", "POST"],
     },
 })
 
-io.on("connection",async socket =>{
-    // socket.emit("popup",true)
-    const document = await getGoingProcess("default")
-    socket.emit('executePopUp',document.onProcess)
-
-    socket.on('begin-search',async delta =>{
-        await createQueue(delta).then(()=>{
-            socket.emit('popup',true)
-        })
-        .catch(err =>{console.log(err)})
-    })
-
-    socket.on('execute',async data =>{
-        const executeDocument = await getOnProcess(data,true)
-        socket.emit('executePopUp',executeDocument.onProcess)
-    })
-
-    socket.on('disconnect',()=>{
-        console.log('Disconnected! '+socket.id)
-    })
-
-    socket.on('error', (err) => {
-        console.log(err)
-    })
-})
-
-async function createQueue(content){
-    return await Queue.create(content)
-}
-
-async function getOnProcess(name,status){
-    const document = await Process.findOneAndUpdate(name,{onProcess: status})
-    if (document) return document
-    return await Process.create({name:name, onProcess: status })
-}
-
-async function getGoingProcess(name){
-    return await Process.findOne({name:name})
-}
-//----------------------------------------------------------END OF IMPORT SOCKETIO-----------------------------------
-
-// async function createInventory(content){
-//     return await Inventory.create(content)
-// }
-
-// async function deleteFirstItem(){
-//     return await Queue.deleteOne().sort({ createdAt: 1 })
-//         .exec((err, item) => {
-//             if (err) return (err)
-//         })
-// }
+//----------------------------------------------------------END OF IMPORT CORS-----------------------------------
 
 // Mongoose Listening Stream
 inventoryWatch.on('change',async (change)=>{
@@ -192,7 +142,6 @@ inventoryWatch.on('change',async (change)=>{
             // location: task.location
             }
         ).catch((error)=>{console.log(error)})
-        getOnProcess('default',false)
     } 
 })
 

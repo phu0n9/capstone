@@ -10,9 +10,8 @@ const Inventory = new Schema({
         required:true
     },
     userId:{
-        type: Schema.Types.ObjectId, 
-        ref:'User',
-        required:true
+        required:true,
+        type:String
     }
 },{   
     timestamps: true,

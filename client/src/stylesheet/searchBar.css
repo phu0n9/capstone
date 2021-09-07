@@ -1,14 +1,16 @@
 /* Search bar style */
 
 .search-box{
-    margin: 5px 140px;
-    width: 100%;
+    margin: 5px 2rem;
+    width: 80%;
     padding: 10px 35px 10px 15px;
-    border-radius: 100px;
     outline: none;
     transition: width 1s;
     border: 2px solid #e5e5e5;
-    border-bottom: 6px solid #e5e5e5;
+    justify-content:center;
+    text-align: center;
+    border-radius:7px;
+
 }
 
 .search-box:focus{
@@ -16,13 +18,21 @@
 }
 
 .search-btn{
-    background: transparent;
-    border: none;
-    outline: none;
-    position: absolute;
-    margin-left:-190px;
-    margin-top: 15px;
+    background: #118e53;
+    position: fixed;
+    width:10%;
+    height:2rem;
+    margin: 2% 5%;
+    border:none;
+    border-radius:2px;
+    align-items: center;
+    box-sizing: border-box;
+    border-radius: 0.6em;
+    color:#e5e5e5
+}
 
+.search-btn:hover{
+    background-color: rgb(35, 103, 228);
 }
 
 .search-btn img{

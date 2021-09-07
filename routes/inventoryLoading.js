@@ -15,14 +15,31 @@ const jwtCheck = jwt({
   algorithms: ['RS256']
 })
 
-router.route('').get(jwtCheck,async (req,res,next) => {
-    const page = req.query.page || 1 // Page 
+router.route('').get(jwtCheck,async (req,res) => {
+    const page = req.query.page || 1// Page 
     const resPerPage = 5 // results per page
-    await Inventory.find().sort({'createdAt':-1}).skip(page - resPerPage).limit(resPerPage)
+    await Inventory.find().sort({'createdAt':-1}).skip((page - resPerPage)).limit(resPerPage)
+    .then(inventory =>{      
+      res.send(inventory) // return data JSON   
+    })
+    .catch(err => console.log(err)) 
+})
+
+router.route('/:id').get(jwtCheck,async (req, res) =>{
+  const itemId = req.params.id
+  await Inventory.findById(itemId)
+  .then((item) => res.send(item))
+  .catch((err) => res.send(err))
+})
+
+router.route('/search').get(jwtCheck,async (req, res) =>{
+  const keyword = req.query.keyword
+  await Inventory.find({location:{"$regex":keyword,"$options":"i"}}).sort({'createdAt':-1})
     .then(inventory =>{      
       res.send(inventory) // return data JSON   
     })
     .catch(err => console.log(err))    
 })
+
 
 module.exports = router

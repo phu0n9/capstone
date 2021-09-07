@@ -4,12 +4,11 @@ import Pusher from 'pusher-js'
 import {useAuth0} from '@auth0/auth0-react'
 require('dotenv').config()
 
-export default function InfinityScroll(pageNumber,keyword,selection) {
+export default function InfinityScroll(pageNumber,keyword) {
     const [loading,setLoading] = useState(true)
     const [error,setError] = useState(false)
     const [inventory,setInventory] = useState([])
     const [hasMore,setHasMore] = useState(false)       
-    const [change,setChange] = useState(false)
     const heroku = 'https://schaeffler.herokuapp.com/'
     const {isAuthenticated,getAccessTokenSilently} = useAuth0()
 
@@ -31,8 +30,6 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
                     setInventory(() =>{
                         return [...new Set([...'',...res.data.map(i => i)])]
                     })
-                    // setHasMore(res.data.length > 0)
-                    // setLoading(false)
                 })
                 .catch(e =>{
                     setError(true)
@@ -46,40 +43,22 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            // fetchApi('http://localhost:5000/inventory',{page:5}) //change here
-            fetchApi(heroku+'inventory',{page:5}) //change here
-            setChange(true)
+            fetchApi('http://localhost:5000/inventory',{page:5}) //change here
+            // fetchApi(heroku+'inventory',{page:5}) //change here
         })
-        if(keyword !== undefined){
-            switch(selection){
-                case "location":
-                    // fetchApi('http://localhost:5000/sort/sortByLocation',{location:keyword}) //change here
-                    fetchApi(heroku+'sort/sortByLocation',{location:keyword}) //change here
-
-                    break
-                case "userId":
-                    // fetchApi('http://localhost:5000/sort/sortByUserId',{userId:keyword}) //change here
-                    fetchApi(heroku+'sort/sortByUserId',{userId:keyword}) //change here
-                    break
-                case "date":
-                    // fetchApi('http://localhost:5000/sort/sortByTime',{time:keyword}) //change here
-                    fetchApi(heroku+'sort/sortByTime',{time:keyword}) //change here
-                    break
-                default:
-                    break
-            }
-        }
         return () => channel.unbind('inserted')
-    },[isAuthenticated,getAccessTokenSilently,keyword,selection])
+    },[isAuthenticated,getAccessTokenSilently])
 
     useEffect(() =>{
         async function getPages(){
             if(isAuthenticated){
                 const token = await getAccessTokenSilently()
+                setLoading(true)
+                setError(false)
                 await axios({
                     method:'GET',
-                    // url: 'http://localhost:5000/inventory', //change here
-                    url: heroku+'inventory', //change here
+                    url: 'http://localhost:5000/inventory', //change here
+                    // url: heroku+'inventory', //change here
                     params:{page:pageNumber},
                     headers:{
                         authorization:`Bearer ${token}`
@@ -91,7 +70,6 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
                     })
                         setHasMore(res.data.length > 0)
                         setLoading(false)
-                        setChange(false)
                 })
                 .catch(e =>{
                     setError(true)
@@ -99,12 +77,9 @@ export default function InfinityScroll(pageNumber,keyword,selection) {
                 })
             }
         }
-        setLoading(true)
-        setError(false)
-        if(keyword === ''){
-            getPages()
-        }
-    },[pageNumber,keyword,isAuthenticated,getAccessTokenSilently])
+        
+        getPages()
+    },[pageNumber,isAuthenticated,getAccessTokenSilently])
 
-    return {loading,hasMore,error,inventory,change}
+    return {loading,hasMore,error,inventory}
 }

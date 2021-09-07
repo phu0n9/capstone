@@ -1,64 +1,21 @@
-import React,{useEffect,useState} from 'react'
-import ReactSpeedometer from "react-d3-speedometer"
-import Pusher from 'pusher-js'
+import React from 'react'
 
-export default function Status() {
+export default function carStatus({carLocation,carVelocity}) {
     require('dotenv').config()
-    const [velocity,setVelocity] = useState(0)
-    const [location,setLocation] = useState(undefined)
-    const [connection,setConnection] = useState(false)
-    const [connectTitle,setConnectTitle] = useState('offline')
-
-    useEffect(() =>{
-        const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY,{
-            'cluster':process.env.REACT_APP_PUSHER_CLUSTER,
-            forceTLS: true,
-        })
-
-        const messageChannel  = pusher.subscribe('carMessage')
-        messageChannel.bind('send',function(data){
-            setVelocity(data.velocity)
-            setLocation(data.location)
-            setConnection(true)
-            setConnectTitle('online')
-        })
-
-
-        messageChannel.bind('connection',(status)=>{
-            setConnection(status)
-            setConnectTitle('offline')
-            setVelocity(0)
-            setLocation(undefined)
-            console.log(status)
-        })
-
-        return () => {
-            pusher.unsubscribe(messageChannel)
-            pusher.disconnect()
-        }
-    },[])
 
     return (
-        <div className="status-wrapper">
-            <div className="img-container">
-                <img src="car.png" alt="car-img" className="img-oval"/>
-                <div className={connection ? "offline-dot online-dot": "offline-dot"}/>
-            </div>
-            <p>Car is {connectTitle}</p>
-            <p>
+        <div className="device-container">
+            <p className="device-status">CAR STATUS</p>
+            <p className="status-title">
                 <img src="location.png" alt="location" className="icon-wrapper"/>
-                Current location: {location}
+                Current location:
             </p>
-            <ReactSpeedometer
-            width={150}
-            height={100}
-            maxValue={50}
-            value={velocity}
-            needleColor="red"
-            startColor="green"
-            segments={5}
-            endColor="blue"
-            />
+            <p className="status-value">{carLocation}</p>
+            <p className="status-title">
+                <img src="speedometer.png" alt="speedometer" className="icon-wrapper"/>
+                Velocity:
+            </p>
+            <p className="status-value"> {carVelocity} m/s</p>
         </div>
 
     )

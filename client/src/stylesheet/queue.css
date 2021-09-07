@@ -1,0 +1,49 @@
+.queue-wrapper{
+    background-color: var(--white-color);
+    width: 30%;
+    height: 70vh;
+    margin: calc(var(--header-height) + 70px) 20%;
+    position: absolute;
+    box-shadow: 0 0 10px black;
+    animation: popup 0.7s;
+}
+
+.queue-slider{
+    width: 80%;
+    height:90%;
+    float:left;
+    margin-top:10px;
+    margin-left:10px;
+    overflow-y: scroll;
+}
+
+.keyword-label{
+    margin: 0 25%;
+}
+
+.cancel-item-btn,.execute-item-btn{
+    display: inline-block;
+    width:25%;
+    height:2rem;
+    border-radius:2px;
+    border:none;
+    box-sizing: border-box;
+    border-radius: 0.2em;
+    color:#e5e5e5;
+    margin-left: 2%;
+    margin-bottom: 2%;
+}
+
+.cancel-item-btn{
+    background-color: red;
+    margin-left: 23%;
+}
+
+.execute-item-btn{
+    background-color: #358858;
+}
+
+.queue-item{
+    margin-top: 5px;
+    border: 1px solid #acabab;
+}

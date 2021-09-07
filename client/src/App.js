@@ -13,6 +13,8 @@ function App() {
   <Router>
       <Switch>
         <ProtectedRoute component={Homepage} path="/" exact />
+        <ProtectedRoute component={Homepage} path="/profile" exact />
+        {/* <Route path="/" component={Homepage} exact/> */}
         <Route path="*" component={() => "404 NOT FOUND"}/>
       </Switch>
     </Router>

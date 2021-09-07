@@ -6,11 +6,10 @@ import {useAuth0} from '@auth0/auth0-react'
 require('dotenv').config()
 
 export default function PopUp() {
-
+    const [loading,setLoading] = useState(true)
+    const [hasMore,setHasMore] = useState(false)       
     const [queue,setQueue] = useState([])
     const [error,setError] = useState(false)
-    const [landingStatus,setLandingStatus] = useState("up")
-    const [searchStatus, setSearchStatus] = useState("available")
     const heroku = 'https://schaeffler.herokuapp.com/queue'
     const {isAuthenticated,getAccessTokenSilently} = useAuth0()
     
@@ -23,8 +22,8 @@ export default function PopUp() {
                 setError(false)
                 await axios({
                     method:'GET',
-                    // url: 'http://localhost:5000/queue',//change here
-                    url: heroku,//change here
+                    url: 'http://localhost:5000/queue',//change here
+                    // url: heroku,//change here
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -33,6 +32,8 @@ export default function PopUp() {
                     setQueue(prevInventory =>{
                         return [...new Set([...prevInventory,...res.data.map(i => i)])]
                     })
+                    setHasMore(res.data.length > 0)
+                    setLoading(false)
                 })
                 .catch(e =>{
                     setError(true)
@@ -40,6 +41,8 @@ export default function PopUp() {
                 })
             }
         }
+        setLoading(true)
+        setError(false)
         getQueue()
     },[getAccessTokenSilently,isAuthenticated])
 
@@ -48,10 +51,10 @@ export default function PopUp() {
             if(isAuthenticated){
                 const token = await getAccessTokenSilently()
                 setError(false)
-                await axios({
+                axios({
                     method:'GET',
-                    // url: 'http://localhost:5000/queue',//change here
-                    url: heroku, //change here
+                    url: 'http://localhost:5000/queue',//change here
+                    // url: heroku, //change here
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -78,23 +81,10 @@ export default function PopUp() {
         channelTask.bind('inserted',function(){
             fetchChanges()
         })
-        const channelLanding = pusher.subscribe('armarker')
-        channelLanding.bind('land',function(data){
-            setLandingStatus(data.landingStatus)
-        })
-        const channelSearch = pusher.subscribe('search')
-        channelSearch.bind('keyword',function(data){
-            if (data !== ""){
-                setSearchStatus("searching")
-            }
-            else setSearchStatus("done")
-        })
         return () => {
-            channelTask.unbind()
-            channelLanding.unbind()
-            channelSearch.unbind()
+            pusher.unsubscribe(channelTask)
         }
     },[getAccessTokenSilently,isAuthenticated])
 
-    return {queue,error,landingStatus,searchStatus}
+    return {queue,error,hasMore,loading}
 }

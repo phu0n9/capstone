@@ -27,11 +27,11 @@ const pusher = new Pusher({
 })
 
 router.route('').get(jwtCheck,async (req,res) => {
-    await Queue.find().sort({ 'createdAt': -1 })
-    .exec((err, item) => {
-        if (err) return (err)
-        res.send(item)
+    await Queue.find().sort({'createdAt':-1})
+    .then(item =>{      
+      res.send(item) // return data JSON   
     })
+    .catch(err => console.log(err))  
 
 })
 
@@ -48,7 +48,13 @@ router.route('/delete/:id').delete(jwtCheck,async (req, res) => {
 
 router.route('/execute/:id').get(jwtCheck,async (req, res) => {
     await pusher.trigger('search','keyword',req.params.id)
-    .then(() => res.status(200).send("sent request"))
+    .then(
+         async () =>{
+             await Queue.findById(req.params.id)
+             .then((data) => {res.status(200).send(data.keyword)})
+             .catch((err) => console.log(err))
+        }
+    )
     .catch((error)=>{console.log(error)})
 })
 
