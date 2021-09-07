@@ -61,7 +61,7 @@ export default function InfinityScroll(pageNumber,keyword) {
                     url: heroku+'inventory', //change here
                     params:{page:pageNumber},
                     headers:{
-                        authorization:`Bearer ${token}`
+                        'Authorization':`Bearer ${token}`
                     }
                 })
                 .then(res => {
