@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import React from 'react'
 import ProtectedRoute from './Route/ProtectedRoute'
+import Profile from './Profile'
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
       <Switch>
         <ProtectedRoute component={Homepage} path="/" exact />
         <ProtectedRoute component={Homepage} path="/profile" exact />
-        {/* <Route path="/" component={Homepage} exact/> */}
+        {/* <Route path="/" component={Homepage} exact/>
+        <Route path="/profile" component={Profile} exact/> */}
         <Route path="*" component={() => "404 NOT FOUND"}/>
       </Switch>
     </Router>

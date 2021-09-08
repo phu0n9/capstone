@@ -1,14 +1,13 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 
 export default function Sidebar({navBarState,setClickGallery,setQueueOnClick}) {
     const {isAuthenticated,logout} = useAuth0()
+    const [currentURIState,setCurrentURIState] = useState(false)
 
-    const data = [
-        { className:"bx-grid-alt",value:"Dashboard",link:'/'},
-        { className:"bx-user",value:"Profile",link:'/profile'},
-        { className:"bx-bar-chart-alt-2",value:"Statistic",link:'/statistics'}
-    ]
+    useEffect(()=>{
+        setCurrentURIState((window.location.pathname === "/profile")? true: false)
+    },[])
 
     return (
         <>
@@ -20,23 +19,15 @@ export default function Sidebar({navBarState,setClickGallery,setQueueOnClick}) {
                             <span className="nav_logo-name">Inventory Check</span> 
                         </div>
                         <div className="nav_list"> 
-                        { 
-                            data.map((item,index) =>{
-                                if(index === 0){
-                                    return <a href={window.location.origin} className="nav_link active" key={index}>
-                                        <i className={'bx nav_icon '+item.className} key={item.className}></i>
-                                        <span className="nav_name" key={item.value}>{item.value}</span>
-                                    </a> 
-                                }
-                                else{
-                                    return <a href={item.link} className="nav_link" key={index}>
-                                        <i className={'bx nav_icon '+item.className} key={item.className}></i>
-                                        <span className="nav_name" key={item.value}>{item.value}</span>
-                                    </a> 
-                                }
-                                
-                            })
-                        }
+                            <a href="/" className={currentURIState ? "nav_link": "nav_link active"}>
+                                <i className='bx nav_icon bx-grid-alt'></i>
+                                <span className="nav_name">Dashboard</span>
+                            </a> 
+                            <a href="/profile" className={currentURIState ? "nav_link active": "nav_link"}>
+                                <i className='bx nav_icon bx-user'></i>
+                                <span className="nav_name">Profile</span>
+                            </a> 
+                       
                         </div>
                     </div> 
                     <div>

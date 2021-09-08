@@ -14,6 +14,7 @@ import './stylesheet/components/battery.css'
 import './stylesheet/components/header.css'
 import './stylesheet/components/sidebar.css'
 import 'intro.js/introjs.css'
+import './stylesheet/profile.css'
 
 import App from './App'
 

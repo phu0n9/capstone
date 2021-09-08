@@ -11,8 +11,8 @@ export default function Header({navBarState,setNavBarState,setStepsEnabled}) {
         async function getAccessToken(){
             if(isAuthenticated){
                 const token = await getAccessTokenSilently()
-                // await axios.get('http://localhost:5000/protected',{//change here
-                await axios.get(heroku+'protected',{//change here
+                await axios.get('http://localhost:5000/protected',{//change here
+                // await axios.get(heroku+'protected',{//change here
                     headers: {
                         authorization:`Bearer ${token}`
                     }
