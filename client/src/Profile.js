@@ -1,8 +1,28 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import { useAuth0 } from "@auth0/auth0-react"
+import axios from 'axios'
 
 const Profile = () => {
   const { user, isAuthenticated,getAccessTokenSilently } = useAuth0()
+
+  useEffect(() =>{
+    async function getAccessToken(){
+        if(isAuthenticated){
+            const token = await getAccessTokenSilently()
+            await axios.get('http://localhost:5000/protected',{//change here
+            // await axios.get(heroku+'protected',{//change here
+                headers: {
+                    authorization:`Bearer ${token}`
+                }
+            })
+            .then(response => {
+              console.log(response.data)
+            })
+            .catch(err => console.log(err))
+        }
+    }
+    getAccessToken()  
+  },[getAccessTokenSilently,isAuthenticated])
 
   return (
     <div className="profile-container">
@@ -35,25 +55,25 @@ const Profile = () => {
                 </div>
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
-                    <label for="fullName">Full Name</label>
+                    <label htmlFor="fullName">Full Name</label>
                     <input type="text" className="form-control" placeholder="Enter full name"/>
                   </div>
                 </div>
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
-                    <label for="eMail">Email</label>
+                    <label htmlFor="eMail">Email</label>
                     <input type="email" className="form-control" id="eMail" placeholder="Enter email ID"/>
                   </div>
                 </div>
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
-                    <label for="phone">Phone</label>
+                    <label htmlFor="phone">Phone</label>
                     <input type="text" className="form-control" placeholder="Enter phone number"/>
                   </div>
                 </div>
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
-                    <label for="website">Website URL</label>
+                    <label htmlFor="website">Website URL</label>
                     <input type="url" className="form-control" id="website" placeholder="Website url"/>
                   </div>
                 </div>
@@ -64,25 +84,25 @@ const Profile = () => {
                 </div>
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
-                    <label for="Street">Street</label>
+                    <label htmlFor="Street">Street</label>
                     <input type="name" className="form-control" placeholder="Enter Street"/>
                   </div>
                 </div>
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
-                    <label for="ciTy">City</label>
-                    <input type="name" class="form-control" placeholder="Enter City"/>
+                    <label htmlFor="ciTy">City</label>
+                    <input type="name" className="form-control" placeholder="Enter City"/>
                   </div>
                 </div>
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
-                    <label for="sTate">State</label>
+                    <label htmlFor="sTate">State</label>
                     <input type="text" class="form-control" placeholder="Enter State"/>
                   </div>
                 </div>
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
-                    <label for="zIp">Zip Code</label>
+                    <label htmlFor="zIp">Zip Code</label>
                     <input type="text" className="form-control" placeholder="Zip Code"/>
                   </div>
                 </div>
