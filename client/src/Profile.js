@@ -1,28 +1,36 @@
 import React,{useEffect,useState} from 'react'
 import { useAuth0 } from "@auth0/auth0-react"
+import CalendarHeatmap from 'react-calendar-heatmap'
+import 'react-calendar-heatmap/dist/styles.css'
 import axios from 'axios'
 
 const Profile = () => {
-  const { user, isAuthenticated,getAccessTokenSilently } = useAuth0()
+  const { user,isAuthenticated,getAccessTokenSilently} = useAuth0()
+  const [userDataSearch,setUserDataSearch] = useState([])
 
   useEffect(() =>{
     async function getAccessToken(){
-        if(isAuthenticated){
-            const token = await getAccessTokenSilently()
-            await axios.get('http://localhost:5000/protected',{//change here
-            // await axios.get(heroku+'protected',{//change here
-                headers: {
-                    authorization:`Bearer ${token}`
-                }
+      if(isAuthenticated){
+          const token = await getAccessTokenSilently()
+          await axios({
+            method:'GET',
+            url: 'http://localhost:5000/profile/date', //change here
+            // url: heroku+'profile/date', //change here
+            params:{userId:user.sub},
+            headers:{
+                'Authorization':`Bearer ${token}`
+            }
+        })
+          .then(response => {
+              setUserDataSearch(prevInventory =>{
+                return [...new Set([...prevInventory,...response.data.map(i => i)])]
             })
-            .then(response => {
-              console.log(response.data)
-            })
-            .catch(err => console.log(err))
-        }
+          })
+          .catch(err => console.log(err))
+      }
     }
-    getAccessToken()  
-  },[getAccessTokenSilently,isAuthenticated])
+    getAccessToken()
+  },[getAccessTokenSilently,isAuthenticated,user])
 
   return (
     <div className="profile-container">
@@ -33,14 +41,10 @@ const Profile = () => {
               <div className="account-settings">
                 <div className="user-profile">
                   <div className="user-avatar">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="profile-pic"/>
+                    <img src={user.picture} alt="profile-pic"/>
                   </div>
-                  <h5 className="user-name">Yuki Hayashi</h5>
-                  <h6 className="user-email">yuki@Maxwell.com</h6>
-                </div>
-                <div className="about">
-                  <h5>About</h5>
-                  <p>I'm Yuki. Full Stack Designer I enjoy creating user-centric, delightful and human experiences.</p>
+                  <h5 className="user-name">{user.nickname}</h5>
+                  <h6 className="user-email">{user.email}</h6>
                 </div>
               </div>
             </div>
@@ -56,65 +60,48 @@ const Profile = () => {
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
                     <label htmlFor="fullName">Full Name</label>
-                    <input type="text" className="form-control" placeholder="Enter full name"/>
+                    <input type="text" className="form-control" value={user.name} readOnly/>
                   </div>
                 </div>
                 <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                   <div className="form-group">
                     <label htmlFor="eMail">Email</label>
-                    <input type="email" className="form-control" id="eMail" placeholder="Enter email ID"/>
-                  </div>
-                </div>
-                <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone</label>
-                    <input type="text" className="form-control" placeholder="Enter phone number"/>
-                  </div>
-                </div>
-                <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label htmlFor="website">Website URL</label>
-                    <input type="url" className="form-control" id="website" placeholder="Website url"/>
+                    <input type="email" className="form-control" value={user.email} readOnly/>
                   </div>
                 </div>
               </div>
               <div className="row gutters">
                 <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                  <h6 className="mt-3 mb-2 text-primary">Address</h6>
+                  <h6 className="mt-3 mb-2 text-primary">Searches in this year</h6>
                 </div>
-                <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label htmlFor="Street">Street</label>
-                    <input type="name" className="form-control" placeholder="Enter Street"/>
-                  </div>
-                </div>
-                <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label htmlFor="ciTy">City</label>
-                    <input type="name" className="form-control" placeholder="Enter City"/>
-                  </div>
-                </div>
-                <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label htmlFor="sTate">State</label>
-                    <input type="text" class="form-control" placeholder="Enter State"/>
-                  </div>
-                </div>
-                <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label htmlFor="zIp">Zip Code</label>
-                    <input type="text" className="form-control" placeholder="Zip Code"/>
-                  </div>
-                </div>
+                  <CalendarHeatmap
+                    startDate={new Date('2021-01-01')}
+                    endDate={new Date('2022-01-01')}
+                    values={
+                       userDataSearch
+                    }
+                 
+                    classForValue={(value) => {
+                      if (!value) {
+                        return 'color-empty';
+                      }
+                      else if (value.count < 5){
+                        return `color-scale-1`
+                      }
+                      else if (value.count < 10){
+                        return `color-scale-2`
+                      }
+                      else if (value.count <20){
+                        return `color-scale-3`
+                      }
+                      else{
+                        return `color-scale-4`
+                      }
+                    }}
+                  />
+               
               </div>
-              <div className="row gutters">
-                <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                  <div className="text-right">
-                    <button type="button" name="submit" className="btn btn-secondary">Cancel</button>
-                    <button type="button" name="submit" className="btn btn-primary" style={{backgroundColor: '#358858',borderColor:'#358858'}}>Update</button>
-                  </div>
-                </div>
-              </div>
+              
             </div>
           </div>
         </div>

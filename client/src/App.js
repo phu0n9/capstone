@@ -7,7 +7,6 @@ import {
 } from 'react-router-dom'
 import React from 'react'
 import ProtectedRoute from './Route/ProtectedRoute'
-import Profile from './Profile'
 
 function App() {
   return (

@@ -58,10 +58,12 @@ const httpServer = require('http').createServer(app).listen(PORT)
 const inventoryRouter = require('./routes/inventoryLoading')
 const popupRouter = require('./routes/popup')
 const searchRouter = require('./routes/search')
+const profileRouter = require('./routes/profile')
 
 app.use('/inventory',inventoryRouter)
 app.use('/queue',popupRouter)
 app.use('/search',searchRouter)
+app.use('/profile',profileRouter)
 
 //-------------------------------------------------------------END OF ROUTER-----------------------------------------
 //Import Auth0
@@ -141,6 +143,10 @@ inventoryWatch.on('change',async (change)=>{
             }
         ).catch((error)=>{console.log(error)})
     } 
+    else if (change.operationType === 'delete'){
+        await pusher.trigger(channel,'itemDeleted', {})
+        .catch((error)=>{console.log(error)})
+    }
 })
 
 queueWatch.on('change', async (change) =>{

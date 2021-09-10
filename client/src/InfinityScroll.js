@@ -30,6 +30,8 @@ export default function InfinityScroll(pageNumber,keyword) {
                     setInventory(() =>{
                         return [...new Set([...'',...res.data.map(i => i)])]
                     })
+                    setHasMore(res.data.length > 0)
+                    setLoading(false)
                 })
                 .catch(e =>{
                     setError(true)
@@ -43,43 +45,73 @@ export default function InfinityScroll(pageNumber,keyword) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            // fetchApi('http://localhost:5000/inventory',{page:5}) //change here
-            fetchApi(heroku+'inventory',{page:5}) //change here
+            fetchApi('http://localhost:5000/inventory',{page:pageNumber}) //change here
+            // fetchApi(heroku+'inventory',{page:5}) //change here
+        })
+        channel.bind('itemDeleted',function(){
+            fetchApi('http://localhost:5000/inventory',{page:pageNumber}) //change here
+            // fetchApi(heroku+'inventory',{page:5}) //change here
         })
         return () => channel.unbind('inserted')
-    },[isAuthenticated,getAccessTokenSilently])
+    },[isAuthenticated,getAccessTokenSilently,pageNumber])
 
     useEffect(() =>{
         async function getPages(){
             if(isAuthenticated){
                 const token = await getAccessTokenSilently()
-                setLoading(true)
-                setError(false)
-                await axios({
-                    method:'GET',
-                    // url: 'http://localhost:5000/inventory', //change here
-                    url: heroku+'inventory', //change here
-                    params:{page:pageNumber},
-                    headers:{
-                        'Authorization':`Bearer ${token}`
-                    }
-                })
-                .then(res => {
-                    setInventory(prevInventory =>{
-                        return [...new Set([...prevInventory,...res.data.map(i => i)])]
+                
+                if (keyword){
+                    setLoading(true)
+                    setError(false)
+                    await axios({
+                        method:'GET',
+                        url: `http://localhost:5000/inventory/search/${keyword}`, //change here
+                        // url: heroku+`inventory/search/${keyword}`, //change here
+                        headers:{
+                            'Authorization':`Bearer ${token}`
+                        }
                     })
-                        setHasMore(res.data.length > 0)
-                        setLoading(false)
-                })
-                .catch(e =>{
-                    setError(true)
-                    console.log('Error: '+e)
-                })
+                    .then(res => {
+                        setInventory(() =>{
+                            return [...new Set([...'',...res.data.map(i => i)])]
+                        })
+                            setHasMore(res.data.length > 0)
+                            setLoading(false)
+                    })
+                    .catch(e =>{
+                        setError(true)
+                        console.log('Error: '+e)
+                    })
+                }
+                else{
+                    setLoading(true)
+                    setError(false)
+                    await axios({
+                        method:'GET',
+                        url: 'http://localhost:5000/inventory', //change here
+                        // url: heroku+'inventory', //change here
+                        params:{page:pageNumber},
+                        headers:{
+                            'Authorization':`Bearer ${token}`
+                        }
+                    })
+                    .then(res => {
+                        setInventory(prevInventory =>{
+                            return [...new Set([...prevInventory,...res.data.map(i => i)])]
+                        })
+                            setHasMore(res.data.length > 0)
+                            setLoading(false)
+                    })
+                    .catch(e =>{
+                        setError(true)
+                        console.log('Error: '+e)
+                    })
+                }
             }
         }
         
         getPages()
-    },[pageNumber,isAuthenticated,getAccessTokenSilently])
+    },[pageNumber,isAuthenticated,getAccessTokenSilently,keyword])
 
     return {loading,hasMore,error,inventory}
 }

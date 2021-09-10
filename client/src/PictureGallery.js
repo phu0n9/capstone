@@ -3,6 +3,8 @@ import infinityScroll from './InfinityScroll'
 import axios from 'axios'
 import {useAuth0} from '@auth0/auth0-react'
 import PhotoDisplay from './PhotoDisplay'
+import Pusher from 'pusher-js'
+require('dotenv').config()
 
 export default function PictureGallery({setClickGallery,setRowClick,setRackClick,keyword,setKeyword}) {
     const observer = useRef()
@@ -14,6 +16,7 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
     const [clicked,setClicked] = useState(false)
     const [showImage,setShowImage] = useState("")
     const [clickBiggerImg,setClickBiggerImg] = useState(false)
+    const [itemId,setItemId] = useState(undefined)
     const heroku = 'https://schaeffler.herokuapp.com/'
 
     const {
@@ -33,12 +36,28 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
         if(node) observer.current.observe(node)
     },[loading,hasMore])
 
+    useEffect(() =>{
+        const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY,{
+            'cluster':process.env.REACT_APP_PUSHER_CLUSTER,
+            forceTLS: true,
+        })
+        const channel = pusher.subscribe('tasks')
+        channel.bind('inserted',function(){
+            setPageNumber(5)
+        })
+        channel.bind('itemDeleted',function(){
+            setPageNumber(5)
+            setClicked(false)
+        })
+    },[])
+
     const handlePictureClick = async (id) =>{
         if(isAuthenticated){
             setClicked(true)
+            setItemId(id)
             const token = await getAccessTokenSilently()
-            // await axios.get(`http://localhost:5000/inventory/${id}`,{
-                await axios.get(heroku+`inventory/${id}`,{ //change here
+            await axios.get(`http://localhost:5000/inventory/${id}`,{
+                // await axios.get(heroku+`inventory/${id}`,{ //change here
                 headers:{
                     authorization: `Bearer ${token}`
                 }
@@ -50,6 +69,7 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
                 setShowImage(res.data.photo)
             })
             .catch(err => console.log(err))
+
         }
     }
 
@@ -63,6 +83,20 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
 
     const handleBiggerImgClick = () => {
         setClickBiggerImg(true)
+    }
+
+    const handleDeleteItem = async (e) =>{
+        if(isAuthenticated){
+            const token = await getAccessTokenSilently()
+            const url = `http://localhost:5000/inventory/delete/${e.target.value}`//change here
+            // const url = heroku+`queue/delete/${e.target.value}`//change here
+            await axios.delete(url,{
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
+            .catch(error=> {console.log(error)})    
+        }
     }
 
     return ( 
@@ -86,7 +120,7 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
             {clicked ?  <div className="picture-info">
                 <div className="item-info-wrapper">
                     <div className="gallery-btn">
-                        <button className="delete-btn">Delete</button>
+                        <button className="delete-btn" onClick={handleDeleteItem} value={itemId}>Delete</button>
                     </div> <br />
                     <div className="item-info">
                         <p>Item location: {itemLocation}</p>

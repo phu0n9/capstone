@@ -38,8 +38,8 @@ export default function Queue({setQueueOnClick,available,setExecuteOnClick,setRa
         setExecuteOnClick(true)
         if(isAuthenticated && available){
             setExecuteOnClick(false)
-            // const url = `http://localhost:5000/queue/execute/${e.target.value}` //change here
-            const url = heroku+`queue/execute/${e.target.value}` //change here
+            const url = `http://localhost:5000/queue/execute/${e.target.value}` //change here
+            // const url = heroku+`queue/execute/${e.target.value}` //change here
             await axios.get(url,{
                 headers: {
                     authorization: `Bearer ${token}`
@@ -56,8 +56,8 @@ export default function Queue({setQueueOnClick,available,setExecuteOnClick,setRa
     const handleCancelItem = (async (e)=>{
         if(isAuthenticated){
             const token = await getAccessTokenSilently()
-            // const url = `http://localhost:5000/queue/delete/${e.target.value}`//change here
-            const url = heroku+`queue/delete/${e.target.value}`//change here
+            const url = `http://localhost:5000/queue/delete/${e.target.value}`//change here
+            // const url = heroku+`queue/delete/${e.target.value}`//change here
             await axios.delete(url,{
                 headers: {
                     authorization: `Bearer ${token}`

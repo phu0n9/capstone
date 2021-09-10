@@ -1,33 +1,21 @@
 import React,{useState,useEffect} from 'react'
 import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-react'
+import { useHistory } from "react-router-dom";
 
 export default function Header({navBarState,setNavBarState,setStepsEnabled}) {
-    const [userPicture,setUserPicture] = useState("")
-    const {isAuthenticated,getAccessTokenSilently} = useAuth0()
+    const {user,isAuthenticated,getAccessTokenSilently} = useAuth0()
+    const userPicture = user.picture
     const heroku = 'https://schaeffler.herokuapp.com/'
-
-    useEffect(() =>{
-        async function getAccessToken(){
-            if(isAuthenticated){
-                const token = await getAccessTokenSilently()
-                await axios.get('http://localhost:5000/protected',{//change here
-                // await axios.get(heroku+'protected',{//change here
-                    headers: {
-                        authorization:`Bearer ${token}`
-                    }
-                })
-                .then(response => {
-                    setUserPicture(response.data.picture)
-                })
-                .catch(err => console.log(err))
-            }
-        }
-        getAccessToken()  
-    },[getAccessTokenSilently,isAuthenticated])
+    const history = useHistory()
 
     const handleSupportBtn = () => {
-        setStepsEnabled(true)
+        if(window.location.pathname === "/profile"){
+            history.push("/")
+        }
+        else{
+            setStepsEnabled(true)
+        }
     }
 
     return (

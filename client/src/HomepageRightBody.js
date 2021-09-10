@@ -148,8 +148,6 @@ export default function RightBody({setClickGallery,clickGallery,setQueueOnClick,
             setExecuteOnClick(false) 
         }
         else if(available === true && carConnection && droneConnection){
-            setRackDes(0)
-            setRowDes(0)
             getNotification("Device Status","Search can be performed now.","success",5000,400)       
         }
         else if(checkRack === false){
@@ -161,6 +159,8 @@ export default function RightBody({setClickGallery,clickGallery,setQueueOnClick,
         }
         else if(droneStatus === "landed"){
             setDroneStatus("")
+            setRackDes(0)
+            setRowDes(0)
         }
         else if(scanned){
             getNotification("Device status","Drone went to right position","success",10000,400)       
@@ -181,7 +181,7 @@ export default function RightBody({setClickGallery,clickGallery,setQueueOnClick,
 
     return (
         <>
-            <ControlBox buttonSubmit={buttonSubmit} setButtonSubmit={setButtonSubmit} droneConnection={droneConnection} carConnection={carConnection}/>
+            <ControlBox buttonSubmit={buttonSubmit} setButtonSubmit={setButtonSubmit} droneConnection={droneConnection} carConnection={carConnection} setQueueOnClick={setQueueOnClick}/>
             <Mapping rowDes={rowDes} rackDes={rackDes} available={available} setRowClick={setRowClick} setRackClick={setRackClick}/>
             {clickGallery ? <PictureGallery setClickGallery={setClickGallery} setRackClick={setRackClick} setRowClick={setRowClick} keyword={keyword} setKeyword={setKeyword}/>: ""}
             {queueOnClick ? <Queue setQueueOnClick={setQueueOnClick} available={available} setExecuteOnClick={setExecuteOnClick} setRackDes={setRackDes} setRowDes={setRowDes}/>: ""}

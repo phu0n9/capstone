@@ -39,6 +39,8 @@ export default function Mapping({rowDes,rackDes,available,setRackClick,setRowCli
 
 
     useEffect(()=>{
+        console.log("rackDes: " +rackDes)
+        console.log("rowDes: "+rowDes)
         const context = canvas.current.getContext("2d")
         const desX = (17 - rowDes -1) * 55 + 40
         const desY = getMarginY(rackDes)

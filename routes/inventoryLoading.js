@@ -32,13 +32,24 @@ router.route('/:id').get(jwtCheck,async (req, res) =>{
   .catch((err) => res.send(err))
 })
 
-router.route('/search').get(jwtCheck,async (req, res) =>{
-  const keyword = req.query.keyword
+router.route('/search/:keyword').get(jwtCheck,async (req, res) =>{
+  const keyword = req.params.keyword
   await Inventory.find({location:{"$regex":keyword,"$options":"i"}}).sort({'createdAt':-1})
     .then(inventory =>{      
       res.send(inventory) // return data JSON   
     })
     .catch(err => console.log(err))    
+})
+
+router.route('/delete/:id').delete(jwtCheck,async (req, res) => {
+  await Inventory.findByIdAndDelete(req.params.id).exec((err, inventory) => {
+      if (err) return (err)
+      const response = {
+          message: "Successfully deleted",
+          id: req.params.id
+      }
+      return res.status(200).send(response)
+  })
 })
 
 

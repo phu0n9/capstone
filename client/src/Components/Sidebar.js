@@ -4,10 +4,12 @@ import { useAuth0 } from '@auth0/auth0-react'
 export default function Sidebar({navBarState,setClickGallery,setQueueOnClick}) {
     const {isAuthenticated,logout} = useAuth0()
     const [currentURIState,setCurrentURIState] = useState(false)
+    const [currentURI,setCurrentURI] = useState(window.location.pathname)
 
     useEffect(()=>{
-        setCurrentURIState((window.location.pathname === "/profile")? true: false)
-    },[])
+        setCurrentURI(window.location.pathname)
+        setCurrentURIState((currentURI === "/profile")? true: false)
+    },[currentURI])
 
     return (
         <>

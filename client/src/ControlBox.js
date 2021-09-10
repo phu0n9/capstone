@@ -3,7 +3,7 @@ import SearchBar from './SearchBar'
 import Status from './Status'
 import Pusher from 'pusher-js'
 
-export default function ControlBox({buttonSubmit,setButtonSubmit,droneConnection,carConnection}) {
+export default function ControlBox({buttonSubmit,setButtonSubmit,droneConnection,carConnection,setQueueOnClick}) {
     const [deviceCheck,setDeviceCheck] = useState(false)
     const [carVelocity,setCarVelocity] = useState(0)
     const [carLocation,setCarLocation] = useState("undefined")
@@ -52,7 +52,8 @@ export default function ControlBox({buttonSubmit,setButtonSubmit,droneConnection
             <div className="wrapper">
                 <div className="search-sidebar">
                     <SearchBar setDeviceCheck={setDeviceCheck} deviceCheck={deviceCheck} 
-                    setButtonSubmit={setButtonSubmit} buttonSubmit={buttonSubmit}/>
+                    setButtonSubmit={setButtonSubmit} buttonSubmit={buttonSubmit}
+                    setQueueOnClick={setQueueOnClick}/>
                 </div>
                 <div className="status-wrapper">
                     <Status setDeviceCheck={setDeviceCheck} deviceCheck={deviceCheck}

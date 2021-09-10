@@ -2,12 +2,12 @@ import React,{useEffect,useState} from 'react'
 import axios from 'axios'
 import {useAuth0} from '@auth0/auth0-react'
 
-export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,buttonSubmit}) {
+export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,buttonSubmit,setQueueOnClick}) {
+    const {user,isAuthenticated,getAccessTokenSilently} = useAuth0()
     const [keyword,setKeyword] = useState("")
-    const [userId,setUserId] = useState("")
+    const [userId,setUserId] = useState(user.sub)
     const heroku = 'https://schaeffler.herokuapp.com/'
 
-    const {isAuthenticated,getAccessTokenSilently} = useAuth0()
 
     const onSearchClickButton = () => {
         if(!deviceCheck){
@@ -16,29 +16,11 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
         else {
             setButtonSubmit(true)
             setDeviceCheck(false)
+            setUserId(user.sub)
         }
     }
 
     const onSearching = (event) =>setKeyword(event.target.value)
-
-    useEffect(() =>{
-        async function getAccessToken(){
-            if(isAuthenticated){
-                const token = await getAccessTokenSilently()
-                // await axios.get('http://localhost:5000/protected',{ //change here
-                await axios.get(heroku+'protected',{ //change here
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                .then(response => {
-                    setUserId(response.data.sub)
-                })
-                .catch(err => console.log(err))
-            }
-        }
-        getAccessToken()  
-    },[getAccessTokenSilently,isAuthenticated])
 
     useEffect(() =>{
        
@@ -53,9 +35,7 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
                 await axios.post(heroku+'search' //change here
                 ,{keyword:keyword,userId:userId},{headers:headers}
                     // url:  heroku+'search', //change here
-                ).then(response => {
-                    console.log(response)
-                })
+                ).then(() => {})
                 .catch(err => console.log(err))
             }
         }
@@ -65,7 +45,9 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
             if (keyword !== "" && regexp.test(keyword)){
                 getAccessToken(keyword,userId)
                 setButtonSubmit(false)
+                setQueueOnClick(true)
                 setKeyword("")
+                setUserId("")
             }
             else if(!regexp.test(keyword)){
                 alert("Invalid keyword")
@@ -74,7 +56,7 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
                 alert("Please enter a keyword")
             } 
         }
-    },[keyword,buttonSubmit,userId,setButtonSubmit,getAccessTokenSilently,isAuthenticated])
+    },[keyword,buttonSubmit,userId,setButtonSubmit,getAccessTokenSilently,isAuthenticated,setQueueOnClick])
 
     return (
         <>

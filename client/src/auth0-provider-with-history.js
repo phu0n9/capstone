@@ -22,6 +22,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
       audience={process.env.REACT_APP_AUTH0_AUDIENCE}
       scope={process.env.REACT_APP_AUTH0_SCOPE}
       useRefreshTokens={true}
+      cacheLocation="localstorage"
     >
       {children}
     </Auth0Provider>
