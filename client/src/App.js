@@ -7,15 +7,14 @@ import {
 } from 'react-router-dom'
 import React from 'react'
 import ProtectedRoute from './Route/ProtectedRoute'
+import ProfileMain from './ProfileMain'
 
 function App() {
   return (
   <Router>
       <Switch>
         <ProtectedRoute component={Homepage} path="/" exact />
-        <ProtectedRoute component={Homepage} path="/profile" exact />
-        {/* <Route path="/" component={Homepage} exact/>
-        <Route path="/profile" component={Profile} exact/> */}
+        <ProtectedRoute component={ProfileMain} path="/profile" exact />
         <Route path="*" component={() => "404 NOT FOUND"}/>
       </Switch>
     </Router>

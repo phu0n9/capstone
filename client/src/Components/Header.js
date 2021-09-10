@@ -1,10 +1,9 @@
-import React,{useState,useEffect} from 'react'
-import axios from 'axios'
+import React from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useHistory } from "react-router-dom";
 
 export default function Header({navBarState,setNavBarState,setStepsEnabled}) {
-    const {user,isAuthenticated,getAccessTokenSilently} = useAuth0()
+    const {user} = useAuth0()
     const userPicture = user.picture
     const heroku = 'https://schaeffler.herokuapp.com/'
     const history = useHistory()
