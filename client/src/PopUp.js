@@ -22,8 +22,8 @@ export default function PopUp() {
                 setError(false)
                 await axios({
                     method:'GET',
-                    // url: 'http://localhost:5000/queue',//change here
-                    url: heroku,//change here
+                    url: 'http://localhost:5000/queue',//change here
+                    // url: heroku,//change here
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -53,8 +53,8 @@ export default function PopUp() {
                 setError(false)
                 axios({
                     method:'GET',
-                    // url: 'http://localhost:5000/queue',//change here
-                    url: heroku, //change here
+                    url: 'http://localhost:5000/queue',//change here
+                    // url: heroku, //change here
                     headers: {
                         authorization: `Bearer ${token}`
                     }

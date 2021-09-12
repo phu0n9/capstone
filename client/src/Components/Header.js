@@ -3,8 +3,8 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { useHistory } from "react-router-dom";
 
 export default function Header({navBarState,setNavBarState,setStepsEnabled}) {
-    const {user} = useAuth0()
-    const userPicture = user.picture
+    // const {user} = useAuth0()
+    // const userPicture = user.picture
     const heroku = 'https://schaeffler.herokuapp.com/'
     const history = useHistory()
 
@@ -29,7 +29,7 @@ export default function Header({navBarState,setNavBarState,setStepsEnabled}) {
             </button>
             
             <div className="header_profile"> 
-                <img src={userPicture} alt="user"/> 
+                {/* <img src={userPicture} alt="user"/>  */}
 
             </div>
         </header>
