@@ -15,6 +15,7 @@ const jwtCheck = jwt({
   algorithms: ['RS256']
 })
 
+
 router.route('').post(jwtCheck,async (req, res)=>{
     await Queue.create({keyword:req.body.keyword,userId:req.body.userId})
     .then(() => res.send("success added to queue"))
