@@ -5,9 +5,8 @@ import {useAuth0} from '@auth0/auth0-react'
 export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,buttonSubmit,setQueueOnClick}) {
     const {user,isAuthenticated,getAccessTokenSilently} = useAuth0()
     const [keyword,setKeyword] = useState("")
-    // const [userId,setUserId] = useState(user.sub)
-    const heroku = 'https://schaeffler.herokuapp.com/'
-
+    const [userId,setUserId] = useState(user.sub)
+    require('dotenv').config()
 
     const onSearchClickButton = () => {
         if(!deviceCheck){
@@ -16,7 +15,7 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
         else {
             setButtonSubmit(true)
             setDeviceCheck(false)
-            // setUserId(user.sub)
+            setUserId(user.sub)
         }
     }
 
@@ -31,10 +30,8 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
-                // await axios.post('http://localhost:5000/search' //change here
-                await axios.post(heroku+'search' //change here
+                await axios.post(process.env.REACT_APP_WINDOW_LOCATION+'search' //change here
                 ,{keyword:keyword,userId:userId},{headers:headers}
-                    // url:  heroku+'search', //change here
                 ).then(() => {})
                 .catch(err => console.log(err))
             }
@@ -43,11 +40,11 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
         var regexp = /^\d{1,2}\.\d{1,2}\.\d{1,2}?$/
         if(buttonSubmit === true){
             if (keyword !== "" && regexp.test(keyword)){
-                // getAccessToken(keyword,userId)
+                getAccessToken(keyword,userId)
                 setButtonSubmit(false)
                 setQueueOnClick(true)
                 setKeyword("")
-                // setUserId("")
+                setUserId("")
             }
             else if(!regexp.test(keyword)){
                 alert("Invalid keyword")
@@ -56,8 +53,7 @@ export default function SearchBar({setDeviceCheck,deviceCheck,setButtonSubmit,bu
                 alert("Please enter a keyword")
             } 
         }
-        // userId
-    },[keyword,buttonSubmit,setButtonSubmit,getAccessTokenSilently,isAuthenticated,setQueueOnClick])
+    },[keyword,buttonSubmit,userId,setButtonSubmit,getAccessTokenSilently,isAuthenticated,setQueueOnClick])
 
     return (
         <>

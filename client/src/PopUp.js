@@ -10,10 +10,7 @@ export default function PopUp() {
     const [hasMore,setHasMore] = useState(false)       
     const [queue,setQueue] = useState([])
     const [error,setError] = useState(false)
-    const heroku = 'https://schaeffler.herokuapp.com/queue'
     const {isAuthenticated,getAccessTokenSilently} = useAuth0()
-    
-    // 'http://localhost:5000/queue'
     
     useEffect(() =>{
         async function getQueue(){
@@ -22,8 +19,7 @@ export default function PopUp() {
                 setError(false)
                 await axios({
                     method:'GET',
-                    url: 'http://localhost:5000/queue',//change here
-                    // url: heroku,//change here
+                    url: process.env.REACT_APP_WINDOW_LOCATION+"queue",
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -53,8 +49,7 @@ export default function PopUp() {
                 setError(false)
                 axios({
                     method:'GET',
-                    url: 'http://localhost:5000/queue',//change here
-                    // url: heroku, //change here
+                    url: process.env.REACT_APP_WINDOW_LOCATION+"queue",
                     headers: {
                         authorization: `Bearer ${token}`
                     }

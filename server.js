@@ -66,60 +66,6 @@ app.use('/search',searchRouter)
 app.use('/profile',profileRouter)
 
 //-------------------------------------------------------------END OF ROUTER-----------------------------------------
-//Import Auth0
-// const jwt = require('express-jwt')
-// const jwks = require('jwks-rsa')
-// const jwtAuthz = require('express-jwt-authz')
-
-// var jwtCheck = jwt({
-//     secret: jwks.expressJwtSecret({
-//         cache: true,
-//         rateLimit: true,
-//         jwksRequestsPerMinute: 5,
-//         jwksUri: process.env.JWKS_URI
-//   }),
-//   audience: process.env.JWT_AUDIENCE,
-//   issuer: process.env.JWT_ISSUER,
-//   algorithms: ['RS256']
-// })
-
-// const checkPermission = jwtAuthz(['read:messages'],{
-//     customScopeKey: 'permissions',
-//     checkAllScopes: true
-// })
-
-// app.use(jwtCheck)
-
-// app.get('/protected', jwtCheck,async (req, res) => {
-//     try{
-//         const accessToken = req.headers.authorization.split(' ')[1]
-//         const response = await axios.get(process.env.JWT_ISSUER+'userInfo',{
-//             headers:{
-//                 authorization: `Bearer ${accessToken}`
-//             }
-//         })
-//         res.send(response.data)
-//     }
-//     catch(error){
-//         console.log(error.message)
-//     }
-// })
-
-// app.use((req,res,next) => {
-//     const error = new Error("Not found")
-//     error.status = 404
-//     next(error)
-// })
-
-// app.use((error,req,res,next)=>{
-//     const status = error.status || 500
-//     const message = error.message || 'Internal Server Error'
-//     res.status(status).send(message)
-// })
-
-
-
-//-------------------------------------------------------------END OF AUTH0------------------------------------------
 
 // Import cors
 require('socket.io')(httpServer,{

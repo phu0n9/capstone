@@ -2,12 +2,11 @@ import React,{useCallback,useRef} from 'react'
 import popUp from '../PopUp'
 import axios from 'axios'
 import {useAuth0} from '@auth0/auth0-react'
+require('dotenv').config()
 
 export default function Queue({setQueueOnClick,available,setExecuteOnClick,setRackDes,setRowDes}) {
     const observer = useRef()
     const {isAuthenticated,getAccessTokenSilently} = useAuth0()
-
-    const heroku = 'https://schaeffler.herokuapp.com/'
 
     const handleCloseButton = () => {
         setQueueOnClick(false)
@@ -38,8 +37,7 @@ export default function Queue({setQueueOnClick,available,setExecuteOnClick,setRa
         setExecuteOnClick(true)
         if(isAuthenticated && available){
             setExecuteOnClick(false)
-            const url = `http://localhost:5000/queue/execute/${e.target.value}` //change here
-            // const url = heroku+`queue/execute/${e.target.value}` //change here
+            const url = process.env.REACT_APP_WINDOW_LOCATION+`queue/execute/${e.target.value}` //change here
             await axios.get(url,{
                 headers: {
                     authorization: `Bearer ${token}`
@@ -56,8 +54,7 @@ export default function Queue({setQueueOnClick,available,setExecuteOnClick,setRa
     const handleCancelItem = (async (e)=>{
         if(isAuthenticated){
             const token = await getAccessTokenSilently()
-            const url = `http://localhost:5000/queue/delete/${e.target.value}`//change here
-            // const url = heroku+`queue/delete/${e.target.value}`//change here
+            const url = process.env.REACT_APP_WINDOW_LOCATION+`queue/delete/${e.target.value}`//change here
             await axios.delete(url,{
                 headers: {
                     authorization: `Bearer ${token}`

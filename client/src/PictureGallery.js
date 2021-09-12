@@ -17,7 +17,6 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
     const [showImage,setShowImage] = useState("")
     const [clickBiggerImg,setClickBiggerImg] = useState(false)
     const [itemId,setItemId] = useState(undefined)
-    const heroku = 'https://schaeffler.herokuapp.com/'
 
     const {
         inventory,
@@ -56,8 +55,7 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
             setClicked(true)
             setItemId(id)
             const token = await getAccessTokenSilently()
-            await axios.get(`http://localhost:5000/inventory/${id}`,{
-                // await axios.get(heroku+`inventory/${id}`,{ //change here
+                await axios.get(process.env.REACT_APP_WINDOW_LOCATION+`inventory/${id}`,{ 
                 headers:{
                     authorization: `Bearer ${token}`
                 }
@@ -88,8 +86,7 @@ export default function PictureGallery({setClickGallery,setRowClick,setRackClick
     const handleDeleteItem = async (e) =>{
         if(isAuthenticated){
             const token = await getAccessTokenSilently()
-            const url = `http://localhost:5000/inventory/delete/${e.target.value}`//change here
-            // const url = heroku+`queue/delete/${e.target.value}`//change here
+            const url = process.env.REACT_APP_WINDOW_LOCATION+`queue/delete/${e.target.value}`//change here
             await axios.delete(url,{
                 headers: {
                     authorization: `Bearer ${token}`

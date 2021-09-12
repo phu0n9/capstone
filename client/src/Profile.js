@@ -7,6 +7,7 @@ import axios from 'axios'
 const Profile = () => {
   const { user,isAuthenticated,getAccessTokenSilently} = useAuth0()
   const [userDataSearch,setUserDataSearch] = useState([])
+  require('dotenv').config()
 
   useEffect(() =>{
     async function getAccessToken(){
@@ -14,8 +15,7 @@ const Profile = () => {
           const token = await getAccessTokenSilently()
           await axios({
             method:'GET',
-            url: 'http://localhost:5000/profile/date', //change here
-            // url: heroku+'profile/date', //change here
+            url: process.env.REACT_APP_WINDOW_LOCATION+'profile/date', //change here
             params:{userId:user.sub},
             headers:{
                 'Authorization':`Bearer ${token}`

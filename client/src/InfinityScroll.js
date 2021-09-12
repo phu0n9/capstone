@@ -9,12 +9,9 @@ export default function InfinityScroll(pageNumber,keyword) {
     const [error,setError] = useState(false)
     const [inventory,setInventory] = useState([])
     const [hasMore,setHasMore] = useState(false)       
-    const heroku = 'https://schaeffler.herokuapp.com/'
     const {isAuthenticated,getAccessTokenSilently} = useAuth0()
 
-   
-    // 'http://localhost:5000/inventory'
-    useEffect(() =>{
+       useEffect(() =>{
         async function fetchApi(URL,paramsDict){
             if(isAuthenticated){
                 const token = await getAccessTokenSilently()
@@ -45,12 +42,10 @@ export default function InfinityScroll(pageNumber,keyword) {
         })
         const channel = pusher.subscribe('tasks')
         channel.bind('inserted',function(){
-            fetchApi('http://localhost:5000/inventory',{page:pageNumber}) //change here
-            // fetchApi(heroku+'inventory',{page:5}) //change here
+            fetchApi(process.env.REACT_APP_WINDOW_LOCATION+'inventory',{page:5}) //change here
         })
         channel.bind('itemDeleted',function(){
-            fetchApi('http://localhost:5000/inventory',{page:pageNumber}) //change here
-            // fetchApi(heroku+'inventory',{page:5}) //change here
+            fetchApi(process.env.REACT_APP_WINDOW_LOCATION+'inventory',{page:5}) //change here
         })
         return () => channel.unbind('inserted')
     },[isAuthenticated,getAccessTokenSilently,pageNumber])
@@ -65,8 +60,7 @@ export default function InfinityScroll(pageNumber,keyword) {
                     setError(false)
                     await axios({
                         method:'GET',
-                        url: `http://localhost:5000/inventory/search/${keyword}`, //change here
-                        // url: heroku+`inventory/search/${keyword}`, //change here
+                        url: process.env.REACT_APP_WINDOW_LOCATION+`inventory/search/${keyword}`, //change here
                         headers:{
                             'Authorization':`Bearer ${token}`
                         }
@@ -88,8 +82,7 @@ export default function InfinityScroll(pageNumber,keyword) {
                     setError(false)
                     await axios({
                         method:'GET',
-                        url: 'http://localhost:5000/inventory', //change here
-                        // url: heroku+'inventory', //change here
+                        url: process.env.REACT_APP_WINDOW_LOCATION+'inventory', //change here
                         params:{page:pageNumber},
                         headers:{
                             'Authorization':`Bearer ${token}`

@@ -5,7 +5,6 @@ import { useHistory } from "react-router-dom";
 export default function Header({navBarState,setNavBarState,setStepsEnabled}) {
     const {user} = useAuth0()
     const userPicture = user.picture
-    const heroku = 'https://schaeffler.herokuapp.com/'
     const history = useHistory()
 
     const handleSupportBtn = () => {
