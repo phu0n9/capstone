@@ -12,9 +12,9 @@ export default function Homepage() {
     const {isLoading} = useAuth0()
     const [stepsEnabled,setStepsEnabled] = useState(true)
 
-    if (isLoading) {
-        return <Loading />
-    }
+    // if (isLoading) {
+    //     return <Loading />
+    // }
 
     return (
         <>
