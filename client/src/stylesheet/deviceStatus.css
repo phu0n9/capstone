@@ -8,7 +8,7 @@
 }
 
 .status-sort{
-    width: 50%;
+    width: 40%;
     display: inline-block;
     margin-top: 0;
     height:39px;
@@ -83,7 +83,6 @@
 .status-value{ 
     float:right;
     font-weight: bold;
-    margin-right: 5px;
 }
 
 .device-status{
