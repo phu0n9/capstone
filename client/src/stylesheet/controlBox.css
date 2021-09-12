@@ -1,0 +1,37 @@
+  
+.wrapper {
+    position: fixed;
+    right: 0%;
+    width: 42vh;
+    height: 100vh;
+    top: 0;
+    margin-top: calc(var(--header-height) + 5px);
+    padding: .5rem 1rem 0 0;
+    transition: .5s;
+    background-color:var(--wrapper-color);
+}
+
+.search-sidebar{
+    background-color: var(--white-color);
+    width: 98%;
+    height: 25vh;
+    margin: auto;
+    border-radius:5px;
+
+}
+
+.status-wrapper{
+    background-color: var(--white-color);
+    width: 98%;
+    height: 70vh;
+    margin: 2px auto;
+    border-radius:5px;
+}
+  
+  
+@media (min-width: 768px) {
+    .wrapper {
+        padding-right: 0;
+    }
+  }
+  

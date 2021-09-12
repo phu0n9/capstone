@@ -1,0 +1,11 @@
+/* photo display wrapper */
+.photo-display-wrapper{
+    margin: auto;
+    padding: 10px;
+    position: absolute;
+    background-color: var(--first-color-light);
+    box-shadow: 0 0 10px black;
+    margin: calc(var(--header-height) + 50px) 10%;
+    animation: popup 0.7s;
+}
+

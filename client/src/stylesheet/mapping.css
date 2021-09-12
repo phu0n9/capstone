@@ -1,0 +1,19 @@
+/* mapping */
+.mapping {
+    height: 100vh;
+    width: 150vh;
+    background-color:var(--wrapper-color);
+    position: fixed;
+}
+
+.mapping-img{
+    width: 98%;
+    margin: 2rem 10px;
+    height: 83%;
+}
+
+.drone-piece{
+    width: 25px;
+    height:25px;
+}
+
