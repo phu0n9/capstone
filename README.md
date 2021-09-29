@@ -7,7 +7,7 @@ The software architecture is displayed as below:
 ![alt text](https://github.com/phu0n9/capstone/blob/main/Capstone%20Presentation%20-%20New%20SoftDes.png)
   
 ## Compiler & Run:
-Access Link: https://schaeffler.herokuapp.com/
+Access Link: https://schaeffler.herokuapp.com/ <br>
 Make sure to check branch Ubuntu for ROS communication
 
 ## Use cases:
