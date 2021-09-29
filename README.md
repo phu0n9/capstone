@@ -8,6 +8,7 @@ The software architecture is displayed as below:
   
 ## Compiler & Run:
 Access Link: https://schaeffler.herokuapp.com/
+Make sure to check branch Ubuntu for ROS communication
 
 ## Use cases:
 Watch this via Youtube: https://youtu.be/p9JawbXy-ws
