@@ -1,0 +1,9 @@
+<launch>
+
+	<node name="carTalker" pkg="beginner_tutorials" type="carTalker.py" output="screen"/>
+	<node name="droneTalker" pkg="beginner_tutorials" type="droneTalker.py" output="screen"/>
+	<node name="qrbarcode" pkg="beginner_tutorials" type="QRBarCode.py" output="screen"/>
+	<node name="client" pkg="beginner_tutorials" type="client.js" output="screen"/>
+	<node name="armarker" pkg="beginner_tutorials" type="ARMarker.py" output="screen"/>
+	<node name="server" pkg="beginner_tutorials" type="server.js" output="screen"/>
+</launch>

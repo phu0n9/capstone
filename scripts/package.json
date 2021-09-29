@@ -1,0 +1,20 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "mongoose": "^5.13.3",
+    "nodemon": "^2.0.12",
+    "pusher": "^5.0.0",
+    "pusher-js": "^7.0.3",
+    "rosnodejs": "^3.0.2"
+  }
+}
