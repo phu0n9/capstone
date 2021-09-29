@@ -16,7 +16,8 @@ Watch this via Youtube: https://youtu.be/p9JawbXy-ws
 ## Known bugs
 * Infinity scroll
 * Device status does not align in Heroku page
-* Online/offline status sometimes work but sometimes don't
+* Online/offline status sometimes work but sometimes don't as the ROS communication handled on shutdown can prioritize some other processes
+* CSS styling is weird on production but localhost is fine
 
 
 
