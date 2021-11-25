@@ -47,7 +47,4 @@
     ]
   },
   "proxy": "http://localhost:5000",
-  "domain": "schaeffler.jp.auth0.com",
-  "clientId": "GAif2AhRFqShErSWwygL1llFoYcGPvX9",
-  "audience": "https://schaeffler.herokuapp.com/"
 }
